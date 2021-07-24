@@ -8,3 +8,5 @@ engines:
         enabled: false
       com.puppycrawl.tools.checkstyle.checks.blocks.NeedBracesCheck:
         enabled: false
+      com.puppycrawl.tools.checkstyle.checks.naming.AbbreviationAsWordInNameCheck:
+        enabled: false
