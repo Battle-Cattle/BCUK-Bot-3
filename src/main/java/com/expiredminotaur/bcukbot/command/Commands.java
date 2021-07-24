@@ -3,6 +3,7 @@ package com.expiredminotaur.bcukbot.command;
 import com.expiredminotaur.bcukbot.fun.counters.CounterHandler;
 import com.expiredminotaur.bcukbot.sql.command.alias.Alias;
 import com.expiredminotaur.bcukbot.sql.command.alias.AliasRepository;
+import com.expiredminotaur.bcukbot.sql.sfx.SFXCategoryRepository;
 import com.expiredminotaur.bcukbot.sql.sfx.SFXRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import reactor.core.publisher.Mono;
@@ -20,6 +21,7 @@ public abstract class Commands<E extends CommandEvent<?>>
     protected AliasRepository aliasRepository;
     protected CounterHandler counterHandler;
     protected SFXRepository sfxRepository;
+    protected SFXCategoryRepository sfxCategoryRepository;
 
     public Mono<Void> processCommand(E event)
     {
@@ -49,11 +51,18 @@ public abstract class Commands<E extends CommandEvent<?>>
     protected String sfxList()
     {
         StringBuilder s = new StringBuilder();
-        Set<String> triggers = new HashSet<>();
+        Set<String> triggers = new HashSet<>(); //Use a set here to remove duplicates
         sfxRepository.getSFXList().forEach(sfx -> triggers.add(sfx.getTriggerCommand()));
         triggers.forEach(trigger -> s.append(trigger).append(", "));
         s.setLength(s.length() - 2);
+        return s.toString();
+    }
 
+    protected String sfxCategoriesList()
+    {
+        StringBuilder s = new StringBuilder();
+        sfxCategoryRepository.findAll().forEach(category -> s.append(category.getName()).append(", "));
+        s.setLength(s.length() - 2);
         return s.toString();
     }
 
@@ -80,5 +89,11 @@ public abstract class Commands<E extends CommandEvent<?>>
     public final void setSfxRepository(SFXRepository sfxRepository)
     {
         this.sfxRepository = sfxRepository;
+    }
+
+    @Autowired
+    public void setSfxCategory(SFXCategoryRepository sfxCategoryRepository)
+    {
+        this.sfxCategoryRepository = sfxCategoryRepository;
     }
 }
