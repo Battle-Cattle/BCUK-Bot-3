@@ -163,17 +163,27 @@ public class SFXView extends HorizontalLayout
 
     private class SfxForm extends Form<SFX>
     {
+        private final ComboBox<String> files;
+        private final ComboBox<SFXCategory> category;
+
         public SfxForm()
         {
             super(SFX.class);
             addField("Trigger Command", new TextField(), "triggerCommand");
-            addField("SFX File", new ComboBox<String>(), "file").setItems(folder.list());
+            files = addField("SFX File", new ComboBox<>(), "file");
             addField("Weight", new TextField(), "weight", new StringToIntegerConverter("Invalid number"));
             addField("Hidden", new Checkbox(), "hidden");
-            ComboBox<SFXCategory> category = addField("Category", new ComboBox<>(), "category");
+            category = addField("Category", new ComboBox<>(), "category");
             category.setItemLabelGenerator(SFXCategory::getName);
-            category.setItems(sfxCategories.findAll());
             category.setClearButtonVisible(true);
+        }
+
+        @Override
+        public void open(SFX data)
+        {
+            files.setItems(folder.list());
+            category.setItems(sfxCategories.findAll());
+            super.open(data);
         }
 
         @Override
