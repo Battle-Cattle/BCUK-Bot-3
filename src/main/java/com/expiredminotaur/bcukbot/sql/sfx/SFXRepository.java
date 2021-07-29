@@ -15,8 +15,12 @@ public interface SFXRepository extends CrudRepository<SFX, Integer>
     @NotNull
     List<SFX> findAll();
 
-    @Query("from SFX where hidden=false")
-    @Cacheable(value = "SFX_NOT_HIDDEN")
+    @Query("from SFX where lower(category.name)=:category")
+    @Cacheable(value = "SFX_LIST_CAT")
+    @NotNull List<SFX> getSFXList(String category);
+
+    @Query("from SFX where hidden=false and category is null")
+    @Cacheable(value = "SFX_LIST")
     @NotNull List<SFX> getSFXList();
 
     @Query("from SFX where lower(triggerCommand)=:trigger")
@@ -31,14 +35,14 @@ public interface SFXRepository extends CrudRepository<SFX, Integer>
     List<SFX> findByCategoryIsNull();
 
     @Override
-    @CacheEvict(value = {"SFX", "SFX_NULL", "SFX_NOT_HIDDEN"}, allEntries = true)
+    @CacheEvict(value = {"SFX", "SFX_NULL", "SFX_LIST", "SFX_LIST_CAT"}, allEntries = true)
     void deleteById(@NotNull Integer id);
 
     @Override
-    @CacheEvict(value = {"SFX", "SFX_NULL", "SFX_NOT_HIDDEN"}, allEntries = true)
+    @CacheEvict(value = {"SFX", "SFX_NULL", "SFX_LIST", "SFX_LIST_CAT"}, allEntries = true)
     void delete(@NotNull SFX sfx);
 
     @Override
-    @CacheEvict(value = {"SFX", "SFX_NULL", "SFX_NOT_HIDDEN"}, allEntries = true)
+    @CacheEvict(value = {"SFX", "SFX_NULL", "SFX_LIST", "SFX_LIST_CAT"}, allEntries = true)
     @NotNull <S extends SFX> S save(@NotNull S sfx);
 }

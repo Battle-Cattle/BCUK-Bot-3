@@ -3,8 +3,10 @@ package com.expiredminotaur.bcukbot.command;
 import com.expiredminotaur.bcukbot.fun.counters.CounterHandler;
 import com.expiredminotaur.bcukbot.sql.command.alias.Alias;
 import com.expiredminotaur.bcukbot.sql.command.alias.AliasRepository;
+import com.expiredminotaur.bcukbot.sql.sfx.SFX;
 import com.expiredminotaur.bcukbot.sql.sfx.SFXCategoryRepository;
 import com.expiredminotaur.bcukbot.sql.sfx.SFXRepository;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import reactor.core.publisher.Mono;
 
@@ -48,14 +50,20 @@ public abstract class Commands<E extends CommandEvent<?>>
         return event.empty();
     }
 
-    protected String sfxList()
+    protected Mono<Void> sfxList(@NotNull E event)
     {
-        StringBuilder s = new StringBuilder();
-        Set<String> triggers = new HashSet<>(); //Use a set here to remove duplicates
-        sfxRepository.getSFXList().forEach(sfx -> triggers.add(sfx.getTriggerCommand()));
-        triggers.forEach(trigger -> s.append(trigger).append(", "));
-        s.setLength(s.length() - 2);
-        return s.toString();
+        String[] command = event.getFinalMessage().split(" ", 2);
+        List<SFX> list = (command.length < 2) ? sfxRepository.getSFXList() : sfxRepository.getSFXList(command[1].toLowerCase());
+        if (list.size() > 0)
+        {
+            StringBuilder s = new StringBuilder();
+            Set<String> triggers = new HashSet<>(); //Use a set here to remove duplicates
+            list.forEach(sfx -> triggers.add(sfx.getTriggerCommand()));
+            triggers.forEach(trigger -> s.append(trigger).append(", "));
+            s.setLength(s.length() - 2);
+            return event.respond(s.toString());
+        }
+        return event.respond("SFX list not found");
     }
 
     protected String sfxCategoriesList()

@@ -38,7 +38,7 @@ public class TwitchCommands extends Commands<TwitchCommandEvent>
 
     public TwitchCommands()
     {
-        commands.put("!Sfx", new TwitchCommand(e -> e.respond(sfxList()), TwitchPermissions::everyone));
+        commands.put("!Sfx", new TwitchCommand(this::sfxList, TwitchPermissions::everyone));
         commands.put("!SfxC", new TwitchCommand(e -> e.respond(sfxCategoriesList()), TwitchPermissions::everyone));
         commands.put("!SO", new TwitchCommand(this::shoutOut, TwitchPermissions::modPlus));
         commands.put("!DadJoke", new TwitchCommand(JokeAPI::jokeCommand, TwitchPermissions::everyone));
