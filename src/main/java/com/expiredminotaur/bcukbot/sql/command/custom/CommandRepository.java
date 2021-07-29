@@ -33,6 +33,5 @@ public interface CommandRepository extends CrudRepository<CustomCommand, Integer
 
     @Override
     @CacheEvict(value = "CustomCommand", allEntries = true)
-    @NotNull
-    <S extends CustomCommand> S save(@NotNull S command);
+    @NotNull <S extends CustomCommand> S save(@NotNull S command);
 }

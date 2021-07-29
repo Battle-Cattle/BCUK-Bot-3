@@ -11,5 +11,5 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 public @interface AccessLevel
 {
-     Role value() default Role.USER;
+    Role value() default Role.USER;
 }

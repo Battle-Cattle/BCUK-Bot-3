@@ -79,7 +79,7 @@ public class StreamData
     public String getGame()
     {
         String game = stream.getGameName();
-        if(game == null)
+        if (game == null)
             return "something";
         return stream.getGameName();
     }

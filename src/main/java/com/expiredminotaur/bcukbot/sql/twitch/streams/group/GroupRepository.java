@@ -24,6 +24,5 @@ public interface GroupRepository extends JpaRepository<Group, Integer>
 
     @Override
     @CacheEvict(value = "Streams", allEntries = true)
-    @NotNull
-    <S extends Group> S save(@NotNull S Group);
+    @NotNull <S extends Group> S save(@NotNull S Group);
 }

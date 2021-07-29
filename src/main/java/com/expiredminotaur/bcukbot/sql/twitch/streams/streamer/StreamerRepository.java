@@ -24,6 +24,5 @@ public interface StreamerRepository extends JpaRepository<Streamer, Integer>
 
     @Override
     @CacheEvict(value = "Streams", allEntries = true)
-    @NotNull
-    <S extends Streamer> S save(@NotNull S Streamer);
+    @NotNull <S extends Streamer> S save(@NotNull S Streamer);
 }

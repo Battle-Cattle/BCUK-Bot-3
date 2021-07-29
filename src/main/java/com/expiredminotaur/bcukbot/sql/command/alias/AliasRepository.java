@@ -29,6 +29,5 @@ public interface AliasRepository extends CrudRepository<Alias, Integer>
 
     @Override
     @CacheEvict(value = "Alias", allEntries = true)
-    @NotNull
-    <S extends Alias> S save(@NotNull S alias);
+    @NotNull <S extends Alias> S save(@NotNull S alias);
 }

@@ -14,7 +14,7 @@ public class MinecraftCategory extends Category
 
     public MinecraftCategory()
     {
-        commands.put("!Whitelist", new DiscordCommand(e->minecraftCommands.whitelist(e), event -> DiscordPermissions.hasRole(event, Snowflake.of(489887389725229066L))));
+        commands.put("!Whitelist", new DiscordCommand(e -> minecraftCommands.whitelist(e), event -> DiscordPermissions.hasRole(event, Snowflake.of(489887389725229066L))));
     }
 
     @Autowired

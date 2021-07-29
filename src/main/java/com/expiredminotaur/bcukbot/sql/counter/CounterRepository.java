@@ -31,6 +31,5 @@ public interface CounterRepository extends CrudRepository<Counter, Integer>
 
     @Override
     @CacheEvict(value = "Counters", allEntries = true)
-    @NotNull
-    <S extends Counter> S save(@NotNull S Counter);
+    @NotNull <S extends Counter> S save(@NotNull S Counter);
 }

@@ -120,7 +120,7 @@ public class JustGivingAPI
             if (total > settings.lastTotal)
             {
                 settings.lastTotal = total;
-                settings.lastTarget =target;
+                settings.lastTarget = target;
                 saveSettings();
                 updateTotalRaisedMessage();
                 sendMessageToAll();
@@ -157,7 +157,7 @@ public class JustGivingAPI
     {
         try
         {
-            if(totalRaisedMessage != null && settings.facebookWebhook != null)
+            if (totalRaisedMessage != null && settings.facebookWebhook != null)
             {
                 JsonObject json = new JsonObject();
                 json.addProperty("message", totalRaisedMessage);

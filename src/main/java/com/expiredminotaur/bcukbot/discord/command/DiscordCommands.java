@@ -23,6 +23,6 @@ public class DiscordCommands
 
     public Mono<Void> processCommand(DiscordCommandEvent event)
     {
-        return Flux.fromIterable(commands.values()).map(c-> c.processCommand(event).subscribe()).then();
+        return Flux.fromIterable(commands.values()).map(c -> c.processCommand(event).subscribe()).then();
     }
 }

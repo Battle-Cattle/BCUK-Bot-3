@@ -20,6 +20,5 @@ public interface BannedPhraseRepository extends CrudRepository<BannedPhrase, Int
 
     @Override
     @CacheEvict(value = "BannedPhrase", allEntries = true)
-    @NotNull
-    <S extends BannedPhrase> S save(@NotNull S phase);
+    @NotNull <S extends BannedPhrase> S save(@NotNull S phase);
 }

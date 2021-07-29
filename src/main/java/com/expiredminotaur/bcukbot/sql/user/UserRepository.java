@@ -35,6 +35,5 @@ public interface UserRepository extends CrudRepository<User, Long>
 
     @Override
     @CacheEvict(value = "Users", allEntries = true)
-    @NotNull
-    <S extends User> S save(@NotNull S user);
+    @NotNull <S extends User> S save(@NotNull S user);
 }

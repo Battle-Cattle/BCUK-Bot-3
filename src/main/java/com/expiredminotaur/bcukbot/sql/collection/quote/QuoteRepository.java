@@ -24,6 +24,5 @@ public interface QuoteRepository extends PagingAndSortingRepository<Quote, Integ
 
     @Override
     @CacheEvict(value = "Quotes", allEntries = true)
-    @NotNull
-    <S extends Quote> S save(@NotNull S Quote);
+    @NotNull <S extends Quote> S save(@NotNull S Quote);
 }

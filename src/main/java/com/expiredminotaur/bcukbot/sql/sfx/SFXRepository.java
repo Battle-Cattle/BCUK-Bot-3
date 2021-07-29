@@ -34,6 +34,5 @@ public interface SFXRepository extends CrudRepository<SFX, Integer>
 
     @Override
     @CacheEvict(value = "SFX", allEntries = true)
-    @NotNull
-    <S extends SFX> S save(@NotNull S sfx);
+    @NotNull <S extends SFX> S save(@NotNull S sfx);
 }

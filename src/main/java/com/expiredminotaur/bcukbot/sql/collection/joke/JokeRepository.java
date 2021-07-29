@@ -24,6 +24,5 @@ public interface JokeRepository extends PagingAndSortingRepository<Joke, Integer
 
     @Override
     @CacheEvict(value = "Jokes", allEntries = true)
-    @NotNull
-    <S extends Joke> S save(@NotNull S Joke);
+    @NotNull <S extends Joke> S save(@NotNull S Joke);
 }

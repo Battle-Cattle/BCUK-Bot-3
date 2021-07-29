@@ -59,7 +59,7 @@ public class MultiTwitch
 
     public void sendToAllUsers(TwitchBot twitchBot)
     {
-        for(String channel:users)
+        for (String channel : users)
             twitchBot.sendMessage(channel, link);
     }
 }

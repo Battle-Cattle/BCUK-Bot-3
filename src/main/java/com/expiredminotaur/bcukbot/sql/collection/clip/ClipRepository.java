@@ -24,6 +24,5 @@ public interface ClipRepository extends PagingAndSortingRepository<Clip, Integer
 
     @Override
     @CacheEvict(value = "Clips", allEntries = true)
-    @NotNull
-    <S extends Clip> S save(@NotNull S Clip);
+    @NotNull <S extends Clip> S save(@NotNull S Clip);
 }
