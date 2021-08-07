@@ -29,7 +29,7 @@ public class SFXHandler
         long time = System.currentTimeMillis();
         if (time - lastSFX > settings.getSfxDelay() * 1000L)
         {
-            List<SFX> sfxList = sfxRepository.findByTrigger(trigger.toLowerCase());
+            List<SFX> sfxList = sfxRepository.findByTriggerCommandIgnoreCase(trigger);
             if (sfxList.size() > 0)
             {
                 SFX sound = pickSound(sfxList);
@@ -43,7 +43,7 @@ public class SFXHandler
     {
         if (override)
         {
-            List<SFX> sfxList = sfxRepository.findByTrigger(trigger.toLowerCase());
+            List<SFX> sfxList = sfxRepository.findByTriggerCommandIgnoreCase(trigger);
             if (sfxList.size() > 0)
             {
                 SFX sound = pickSound(sfxList);

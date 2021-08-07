@@ -33,7 +33,8 @@ public class GeneralCategory extends Category
         commands.put("!Joke", new DiscordCommand(e -> jokeUtils.processCommand(e), DiscordPermissions::general));
         commands.put("!TotalRaised", new DiscordCommand(e -> justGivingAPI.amountRaised(e), DiscordPermissions::general));
         commands.put("!DadJoke", new DiscordCommand(JokeAPI::jokeCommand, DiscordPermissions::general));
-        commands.put("!SFX", new DiscordCommand(e -> e.respond(sfxList()), DiscordPermissions::general));
+        commands.put("!Sfx", new DiscordCommand(this::sfxList, DiscordPermissions::general));
+        commands.put("!SfxC", new DiscordCommand(e -> e.respond(sfxCategoriesList()), DiscordPermissions::general));
     }
 
     private Mono<Void> commands(DiscordCommandEvent event)

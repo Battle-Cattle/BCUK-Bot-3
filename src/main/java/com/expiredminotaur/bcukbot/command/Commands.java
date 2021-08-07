@@ -3,7 +3,10 @@ package com.expiredminotaur.bcukbot.command;
 import com.expiredminotaur.bcukbot.fun.counters.CounterHandler;
 import com.expiredminotaur.bcukbot.sql.command.alias.Alias;
 import com.expiredminotaur.bcukbot.sql.command.alias.AliasRepository;
+import com.expiredminotaur.bcukbot.sql.sfx.SFX;
+import com.expiredminotaur.bcukbot.sql.sfx.SFXCategoryRepository;
 import com.expiredminotaur.bcukbot.sql.sfx.SFXRepository;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import reactor.core.publisher.Mono;
 
@@ -20,6 +23,7 @@ public abstract class Commands<E extends CommandEvent<?>>
     protected AliasRepository aliasRepository;
     protected CounterHandler counterHandler;
     protected SFXRepository sfxRepository;
+    protected SFXCategoryRepository sfxCategoryRepository;
 
     public Mono<Void> processCommand(E event)
     {
@@ -46,14 +50,29 @@ public abstract class Commands<E extends CommandEvent<?>>
         return event.empty();
     }
 
-    protected String sfxList()
+    protected Mono<Void> sfxList(@NotNull E event)
+    {
+        String[] command = event.getFinalMessage().split(" ", 2);
+        Set<SFX> list = (command.length < 2)
+                ? sfxRepository.getSFXList()
+                : sfxCategoryRepository.getSFXCategoryByNameIgnoreCase(command[1]).getSfx();
+        if (list != null && list.size() > 0)
+        {
+            StringBuilder s = new StringBuilder();
+            Set<String> triggers = new HashSet<>(); //Use a set here to remove duplicates
+            list.forEach(sfx -> triggers.add(sfx.getTriggerCommand()));
+            triggers.forEach(trigger -> s.append(trigger).append(", "));
+            s.setLength(s.length() - 2);
+            return event.respond(s.toString());
+        }
+        return event.respond("SFX list not found");
+    }
+
+    protected String sfxCategoriesList()
     {
         StringBuilder s = new StringBuilder();
-        Set<String> triggers = new HashSet<>();
-        sfxRepository.getSFXList().forEach(sfx -> triggers.add(sfx.getTriggerCommand()));
-        triggers.forEach(trigger -> s.append(trigger).append(", "));
+        sfxCategoryRepository.findAll().forEach(category -> s.append(category.getName()).append(", "));
         s.setLength(s.length() - 2);
-
         return s.toString();
     }
 
@@ -80,5 +99,11 @@ public abstract class Commands<E extends CommandEvent<?>>
     public final void setSfxRepository(SFXRepository sfxRepository)
     {
         this.sfxRepository = sfxRepository;
+    }
+
+    @Autowired
+    public void setSfxCategory(SFXCategoryRepository sfxCategoryRepository)
+    {
+        this.sfxCategoryRepository = sfxCategoryRepository;
     }
 }
