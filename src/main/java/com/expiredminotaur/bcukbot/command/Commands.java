@@ -53,9 +53,9 @@ public abstract class Commands<E extends CommandEvent<?>>
     protected Mono<Void> sfxList(@NotNull E event)
     {
         String[] command = event.getFinalMessage().split(" ", 2);
-        Set<SFX> list = (command.length < 2) ?
-                sfxRepository.getSFXList() :
-                sfxCategoryRepository.getSFXCategoryByNameIgnoreCase(command[1]).getSfx();
+        Set<SFX> list = (command.length < 2)
+                ? sfxRepository.getSFXList()
+                : sfxCategoryRepository.getSFXCategoryByNameIgnoreCase(command[1]).getSfx();
         if (list != null && list.size() > 0)
         {
             StringBuilder s = new StringBuilder();
