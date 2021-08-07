@@ -53,8 +53,10 @@ public abstract class Commands<E extends CommandEvent<?>>
     protected Mono<Void> sfxList(@NotNull E event)
     {
         String[] command = event.getFinalMessage().split(" ", 2);
-        List<SFX> list = (command.length < 2) ? sfxRepository.getSFXList() : sfxRepository.getSFXList(command[1].toLowerCase());
-        if (list.size() > 0)
+        Set<SFX> list = (command.length < 2) ?
+                sfxRepository.getSFXList() :
+                sfxCategoryRepository.getSFXCategoryByNameIgnoreCase(command[1]).getSfx();
+        if (list != null && list.size() > 0)
         {
             StringBuilder s = new StringBuilder();
             Set<String> triggers = new HashSet<>(); //Use a set here to remove duplicates

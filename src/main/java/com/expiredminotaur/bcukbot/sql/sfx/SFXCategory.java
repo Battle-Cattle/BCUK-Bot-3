@@ -51,4 +51,10 @@ public class SFXCategory
     {
         this.name = name;
     }
+
+
+    public Set<SFX> getSfx()
+    {
+        return sfxSet;
+    }
 }
