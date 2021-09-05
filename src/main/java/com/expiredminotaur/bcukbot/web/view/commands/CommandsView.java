@@ -45,7 +45,7 @@ public class CommandsView extends HorizontalLayout
         Checkbox discord = new Checkbox("Enable on Discord");
         MultiselectComboBox<User> twitchUsers = new MultiselectComboBox<>("Users");
         twitchUsers.setItemLabelGenerator(User::getTwitchName);
-        twitchUsers.setItems(users.chatBotUsers());
+        twitchUsers.setItems(users.findByIsTwitchBotEnabledIsTrue());
 
         Binder<CustomCommand> binder = new Binder<>(CustomCommand.class);
         binder.bind(trigger, "trigger");
@@ -98,7 +98,7 @@ public class CommandsView extends HorizontalLayout
             addField("Discord Enabled", new Checkbox(), "discordEnabled");
             MultiselectComboBox<User> twitchUsers = addField("Users", new MultiselectComboBox<>(), "twitchEnabledUsers");
             twitchUsers.setItemLabelGenerator(User::getTwitchName);
-            twitchUsers.setItems(users.chatBotUsers());
+            twitchUsers.setItems(users.findByIsTwitchBotEnabledIsTrue());
         }
 
         @Override

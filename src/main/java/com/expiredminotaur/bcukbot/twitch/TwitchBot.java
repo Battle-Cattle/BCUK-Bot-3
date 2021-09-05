@@ -161,7 +161,7 @@ public class TwitchBot implements BotService
 
     public void joinChannels()
     {
-        for (User user : userRepository.chatBotUsers())
+        for (User user : userRepository.findByIsTwitchBotEnabledIsTrue())
         {
             String name = user.getTwitchName();
             if (name != null && !name.equals(""))
