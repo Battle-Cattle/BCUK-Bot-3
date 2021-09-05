@@ -43,7 +43,7 @@ public class JustGivingView extends VerticalLayout
         TextField facebookWebhook = new TextField("Facebook Webhook");
         facebookWebhook.setWidthFull();
 
-        channels.setItems(users.chatBotUsers().stream().map(User::getTwitchName));
+        channels.setItems(users.findByIsTwitchBotEnabledIsTrue().stream().map(User::getTwitchName));
 
         binder.bind(enabled, "autoCheckEnabled");
         binder.bind(channels, "channels");
