@@ -21,7 +21,7 @@ public class TwitchCommandEvent extends CommandEvent<ChannelMessageEvent>
 
     public Mono<Void> respond(String message)
     {
-        event.getTwitchChat().sendMessage(event.getChannel().getName(), message);
+        event.getTwitchChat().sendMessage(event.getChannel().getName(), message, null, event.getMessageEvent().getMessageId().orElse(null));
         return empty();
     }
 
