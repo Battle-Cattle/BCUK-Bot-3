@@ -10,8 +10,8 @@ import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.event.AudioEventAdapter;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
-import discord4j.core.object.presence.Activity;
-import discord4j.core.object.presence.Presence;
+import discord4j.core.object.presence.ClientActivity;
+import discord4j.core.object.presence.ClientPresence;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -84,7 +84,7 @@ public class TrackScheduler extends AudioEventAdapter
 
     public void nextTrack()
     {
-        discordBot.getGateway().updatePresence(Presence.online()).subscribe();
+        discordBot.getGateway().updatePresence(ClientPresence.online()).subscribe();
         AudioTrack track = queue.poll();
         if (track == null || !track.getUserData(TrackData.class).isSfx())
         {
@@ -105,7 +105,7 @@ public class TrackScheduler extends AudioEventAdapter
         {
             if (!resume)
             {
-                discordBot.getGateway().updatePresence(Presence.online(Activity.listening(currentTrack().getInfo().title))).subscribe();
+                discordBot.getGateway().updatePresence(ClientPresence.online(ClientActivity.listening(currentTrack().getInfo().title))).subscribe();
 
                 String playing = "Playing: " + track.getInfo().title;
                 if (track.getUserData(TrackData.class).getRequestedBy() != null)
@@ -135,7 +135,7 @@ public class TrackScheduler extends AudioEventAdapter
     public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason)
     {
         // Only start the next track if the end reason is suitable for it (FINISHED or LOAD_FAILED)
-        discordBot.getGateway().updatePresence(Presence.online()).subscribe();
+        discordBot.getGateway().updatePresence(ClientPresence.online()).subscribe();
         if (endReason.mayStartNext)
         {
             nextTrack();

@@ -2,7 +2,7 @@ package com.expiredminotaur.bcukbot.fun.slot;
 
 import com.expiredminotaur.bcukbot.discord.command.DiscordCommandEvent;
 import discord4j.core.object.entity.Message;
-import discord4j.core.spec.EmbedCreateSpec;
+import discord4j.core.spec.legacy.LegacyEmbedCreateSpec;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
@@ -26,8 +26,8 @@ public class SlotGame
         Outcome outcome = getOutcome();
         String[] display = new String[outcome.result.length];
         Arrays.fill(display, "\u2753");
-        Consumer<EmbedCreateSpec> embed = spec -> spec.setTitle("Slot");
-        Consumer<EmbedCreateSpec> embedWithResult = embed.andThen(spec ->
+        Consumer<LegacyEmbedCreateSpec> embed = spec -> spec.setTitle("Slot");
+        Consumer<LegacyEmbedCreateSpec> embedWithResult = embed.andThen(spec ->
                 spec.addField("Outcome", String.join(" ", display), false)
         );
         Message message = event.respond(embedWithResult).block();
@@ -38,10 +38,10 @@ public class SlotGame
         return Mono.empty().then();
     }
 
-    private void update(Message message, Consumer<EmbedCreateSpec> embed, Outcome outcome, String[] display, int i)
+    private void update(Message message, Consumer<LegacyEmbedCreateSpec> embed, Outcome outcome, String[] display, int i)
     {
         display[i] = outcome.result[i];
-        Consumer<EmbedCreateSpec> embedWithResult = embed.andThen(spec ->
+        Consumer<LegacyEmbedCreateSpec> embedWithResult = embed.andThen(spec ->
                 spec.addField("Outcome", String.join(" ", display), false)
         );
 
@@ -57,9 +57,9 @@ public class SlotGame
         }
     }
 
-    private void showResult(Message message, Consumer<EmbedCreateSpec> embed, Outcome outcome, String[] display)
+    private void showResult(Message message, Consumer<LegacyEmbedCreateSpec> embed, Outcome outcome, String[] display)
     {
-        Consumer<EmbedCreateSpec> embedWithResult = embed.andThen(spec ->
+        Consumer<LegacyEmbedCreateSpec> embedWithResult = embed.andThen(spec ->
                 spec.addField("Result", (outcome.win ? "\u2705" : "\u274c"), false)
         );
         message.edit(messageEditSpec -> messageEditSpec.setEmbed(embedWithResult)).block();

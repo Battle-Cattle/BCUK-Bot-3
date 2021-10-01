@@ -5,7 +5,7 @@ import com.expiredminotaur.bcukbot.sql.discord.points.UserPoints;
 import com.expiredminotaur.bcukbot.sql.discord.points.UserPointsRepository;
 import discord4j.core.event.domain.message.MessageCreateEvent;
 import discord4j.core.object.entity.Member;
-import discord4j.core.spec.EmbedCreateSpec;
+import discord4j.core.spec.legacy.LegacyEmbedCreateSpec;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
@@ -50,7 +50,7 @@ public class PointsSystem
             long userID = member.getId().asLong();
             UserPoints userPoints = pointsData.findById(userID).orElse(new UserPoints(userID));
 
-            Consumer<EmbedCreateSpec> embed = spec ->
+            Consumer<LegacyEmbedCreateSpec> embed = spec ->
             {
                 spec.setAuthor(member.getDisplayName(), "", member.getAvatarUrl());
                 spec.addField("Rank", String.format("%d/%d", pointsData.getRank(member.getId().asLong()).get(0), pointsData.count()), true);
@@ -58,7 +58,7 @@ public class PointsSystem
             };
 
             return event.getMessage().getChannel()
-                    .flatMap(channel -> channel.createMessage(messageCreateSpec -> messageCreateSpec.setEmbed(embed))).then();
+                    .flatMap(channel -> channel.createMessage(messageCreateSpec -> messageCreateSpec.addEmbed(embed))).then();
         }
         return Mono.empty().then();
     }

@@ -8,7 +8,7 @@ import discord4j.core.object.entity.Message;
 import discord4j.core.object.entity.User;
 import discord4j.core.object.entity.channel.MessageChannel;
 import discord4j.core.object.reaction.ReactionEmoji;
-import discord4j.core.spec.EmbedCreateSpec;
+import discord4j.core.spec.legacy.LegacyEmbedCreateSpec;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
@@ -39,7 +39,7 @@ public class TriviaGame
             try
             {
                 Questions.Question question = triviaAPI.getQuestion();
-                Consumer<EmbedCreateSpec> embed = setupEmbed(question);
+                Consumer<LegacyEmbedCreateSpec> embed = setupEmbed(question);
 
                 postQuestion(embed, question, channel);
 
@@ -51,7 +51,7 @@ public class TriviaGame
         return Mono.empty().then();
     }
 
-    private Consumer<EmbedCreateSpec> setupEmbed(Questions.Question question)
+    private Consumer<LegacyEmbedCreateSpec> setupEmbed(Questions.Question question)
     {
         return spec ->
         {
@@ -62,7 +62,7 @@ public class TriviaGame
         };
     }
 
-    private void postQuestion(Consumer<EmbedCreateSpec> embed, Questions.Question question, MessageChannel channel) throws IllegalArgumentException
+    private void postQuestion(Consumer<LegacyEmbedCreateSpec> embed, Questions.Question question, MessageChannel channel) throws IllegalArgumentException
     {
         switch (question.getType())
         {
@@ -77,7 +77,7 @@ public class TriviaGame
         }
     }
 
-    private void multiQuestion(Consumer<EmbedCreateSpec> embed, Questions.Question question, MessageChannel channel)
+    private void multiQuestion(Consumer<LegacyEmbedCreateSpec> embed, Questions.Question question, MessageChannel channel)
     {
         List<String> answers = question.getIncorrectAnswers();
         answers.add(question.getCorrectAnswer());
@@ -86,7 +86,7 @@ public class TriviaGame
                 Emoji.B.getRaw() + parseText(answers.get(1)) + "\n" +
                 Emoji.C.getRaw() + parseText(answers.get(2)) + "\n" +
                 Emoji.D.getRaw() + parseText(answers.get(3));
-        Consumer<EmbedCreateSpec> finalEmbed = embed.andThen(spec -> spec.setDescription(s));
+        Consumer<LegacyEmbedCreateSpec> finalEmbed = embed.andThen(spec -> spec.setDescription(s));
         Message message = channel.createMessage(messageCreateSpec -> messageCreateSpec.setEmbed(finalEmbed)).block();
         if (message != null)
         {
@@ -95,11 +95,11 @@ public class TriviaGame
         }
     }
 
-    private void boolQuestion(Consumer<EmbedCreateSpec> embed, Questions.Question question, MessageChannel channel)
+    private void boolQuestion(Consumer<LegacyEmbedCreateSpec> embed, Questions.Question question, MessageChannel channel)
     {
         String s = Emoji.TRUE.getRaw() + "True" + "\n" +
                 Emoji.FALSE.getRaw() + "False";
-        Consumer<EmbedCreateSpec> finalEmbed = embed.andThen(spec -> spec.setDescription(s));
+        Consumer<LegacyEmbedCreateSpec> finalEmbed = embed.andThen(spec -> spec.setDescription(s));
         Message message = channel.createMessage(messageCreateSpec -> messageCreateSpec.setEmbed(finalEmbed)).block();
         if (message != null)
         {
@@ -165,7 +165,7 @@ public class TriviaGame
 
     private void correctAnswerPost(MessageChannel channel, Questions.Question question, ReactionEmoji.Unicode emoji, String answer, List<User> correct)
     {
-        Consumer<EmbedCreateSpec> embed = spec ->
+        Consumer<LegacyEmbedCreateSpec> embed = spec ->
         {
             DifficultyColour difficultyColour = DifficultyColour.fromString(question.getDifficulty());
             if (difficultyColour != null)
