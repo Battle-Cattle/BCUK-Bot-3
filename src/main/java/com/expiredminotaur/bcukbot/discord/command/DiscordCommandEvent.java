@@ -6,8 +6,6 @@ import discord4j.core.object.entity.Message;
 import discord4j.core.spec.EmbedCreateSpec;
 import reactor.core.publisher.Mono;
 
-import java.util.function.Consumer;
-
 public class DiscordCommandEvent extends CommandEvent<MessageCreateEvent>
 {
 
@@ -28,9 +26,9 @@ public class DiscordCommandEvent extends CommandEvent<MessageCreateEvent>
         return event.getMessage().getChannel().flatMap(c -> c.createMessage(message)).then();
     }
 
-    public Mono<Message> respond(Consumer<EmbedCreateSpec> embed)
+    public Mono<Message> respond(EmbedCreateSpec embed)
     {
-        return event.getMessage().getChannel().flatMap(c -> c.createMessage(m -> m.setEmbed(embed)));
+        return event.getMessage().getChannel().flatMap(c -> c.createMessage(embed));
     }
 
     @Override

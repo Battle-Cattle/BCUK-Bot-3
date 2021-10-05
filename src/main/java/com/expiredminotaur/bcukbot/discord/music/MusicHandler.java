@@ -21,6 +21,7 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.playback.NonAllocatingAudioFrameBuffer;
 import discord4j.core.event.domain.message.MessageCreateEvent;
 import discord4j.core.object.entity.channel.VoiceChannel;
+import discord4j.core.spec.VoiceChannelJoinSpec;
 import discord4j.voice.VoiceConnection;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -91,7 +92,7 @@ public class MusicHandler
                 voiceConnection = null;
             }
         }
-        return channel.join(spec -> spec.setProvider(provider)).doOnNext(vc -> voiceConnection = vc).then();
+        return channel.join(VoiceChannelJoinSpec.builder().provider(provider).build()).doOnNext(vc -> voiceConnection = vc).then();
     }
 
     public boolean leaveChannel()

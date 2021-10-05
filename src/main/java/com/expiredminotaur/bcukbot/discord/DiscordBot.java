@@ -15,6 +15,7 @@ import discord4j.core.object.entity.Message;
 import discord4j.core.object.entity.User;
 import discord4j.core.object.entity.channel.Channel;
 import discord4j.core.object.entity.channel.MessageChannel;
+import discord4j.gateway.intent.IntentSet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
@@ -109,7 +110,7 @@ public class DiscordBot implements BotService
         {
             String token = System.getenv("BCUK_BOT_DISCORD_TOKEN");
             client = DiscordClient.create(token);
-            gateway = client.login().block();
+            gateway = client.gateway().setEnabledIntents(IntentSet.all()).login().block();
             if (gateway == null)
                 stop();
             else

@@ -12,7 +12,6 @@ import reactor.core.publisher.Mono;
 
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Consumer;
 
 @Component
 public class PointsSystem
@@ -50,15 +49,14 @@ public class PointsSystem
             long userID = member.getId().asLong();
             UserPoints userPoints = pointsData.findById(userID).orElse(new UserPoints(userID));
 
-            Consumer<EmbedCreateSpec> embed = spec ->
-            {
-                spec.setAuthor(member.getDisplayName(), "", member.getAvatarUrl());
-                spec.addField("Rank", String.format("%d/%d", pointsData.getRank(member.getId().asLong()).get(0), pointsData.count()), true);
-                spec.addField("points", String.format("%d", userPoints.getPoints()), true);
-            };
+            EmbedCreateSpec embed = EmbedCreateSpec.builder()
+                    .author(member.getDisplayName(), "", member.getAvatarUrl())
+                    .addField("Rank", String.format("%d/%d", pointsData.getRank(member.getId().asLong()).get(0), pointsData.count()), true)
+                    .addField("points", String.format("%d", userPoints.getPoints()), true).build();
+
 
             return event.getMessage().getChannel()
-                    .flatMap(channel -> channel.createMessage(messageCreateSpec -> messageCreateSpec.setEmbed(embed))).then();
+                    .flatMap(channel -> channel.createMessage(embed)).then();
         }
         return Mono.empty().then();
     }

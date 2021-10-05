@@ -8,7 +8,9 @@ import discord4j.core.object.entity.Message;
 import discord4j.core.object.entity.User;
 import discord4j.core.object.entity.channel.MessageChannel;
 import discord4j.core.object.reaction.ReactionEmoji;
+import discord4j.core.spec.EmbedCreateFields;
 import discord4j.core.spec.EmbedCreateSpec;
+import discord4j.core.spec.MessageCreateSpec;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
@@ -20,7 +22,6 @@ import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 @Component
@@ -39,7 +40,7 @@ public class TriviaGame
             try
             {
                 Questions.Question question = triviaAPI.getQuestion();
-                Consumer<EmbedCreateSpec> embed = setupEmbed(question);
+                EmbedCreateSpec embed = setupEmbed(question);
 
                 postQuestion(embed, question, channel);
 
@@ -51,18 +52,16 @@ public class TriviaGame
         return Mono.empty().then();
     }
 
-    private Consumer<EmbedCreateSpec> setupEmbed(Questions.Question question)
+    private EmbedCreateSpec setupEmbed(Questions.Question question)
     {
-        return spec ->
-        {
-            spec.setTitle(parseText(question.getQuestion()));
-            DifficultyColour difficultyColour = DifficultyColour.fromString(question.getDifficulty());
-            if (difficultyColour != null)
-                spec.setColor(difficultyColour.color);
-        };
+        EmbedCreateSpec spec = EmbedCreateSpec.create().withTitle(parseText(question.getQuestion()));
+        DifficultyColour difficultyColour = DifficultyColour.fromString(question.getDifficulty());
+        if (difficultyColour != null)
+            spec = spec.withColor(difficultyColour.color);
+        return spec;
     }
 
-    private void postQuestion(Consumer<EmbedCreateSpec> embed, Questions.Question question, MessageChannel channel) throws IllegalArgumentException
+    private void postQuestion(EmbedCreateSpec embed, Questions.Question question, MessageChannel channel) throws IllegalArgumentException
     {
         switch (question.getType())
         {
@@ -77,7 +76,7 @@ public class TriviaGame
         }
     }
 
-    private void multiQuestion(Consumer<EmbedCreateSpec> embed, Questions.Question question, MessageChannel channel)
+    private void multiQuestion(EmbedCreateSpec embed, Questions.Question question, MessageChannel channel)
     {
         List<String> answers = question.getIncorrectAnswers();
         answers.add(question.getCorrectAnswer());
@@ -86,8 +85,8 @@ public class TriviaGame
                 Emoji.B.getRaw() + parseText(answers.get(1)) + "\n" +
                 Emoji.C.getRaw() + parseText(answers.get(2)) + "\n" +
                 Emoji.D.getRaw() + parseText(answers.get(3));
-        Consumer<EmbedCreateSpec> finalEmbed = embed.andThen(spec -> spec.setDescription(s));
-        Message message = channel.createMessage(messageCreateSpec -> messageCreateSpec.setEmbed(finalEmbed)).block();
+        EmbedCreateSpec finalEmbed = embed.withDescription(s);
+        Message message = channel.createMessage(MessageCreateSpec.create().withEmbeds(finalEmbed)).block();
         if (message != null)
         {
             scheduler.schedule(() -> multiReactions(message), 1L, TimeUnit.SECONDS);
@@ -95,12 +94,12 @@ public class TriviaGame
         }
     }
 
-    private void boolQuestion(Consumer<EmbedCreateSpec> embed, Questions.Question question, MessageChannel channel)
+    private void boolQuestion(EmbedCreateSpec embed, Questions.Question question, MessageChannel channel)
     {
         String s = Emoji.TRUE.getRaw() + "True" + "\n" +
                 Emoji.FALSE.getRaw() + "False";
-        Consumer<EmbedCreateSpec> finalEmbed = embed.andThen(spec -> spec.setDescription(s));
-        Message message = channel.createMessage(messageCreateSpec -> messageCreateSpec.setEmbed(finalEmbed)).block();
+        EmbedCreateSpec finalEmbed = embed.withDescription(s);
+        Message message = channel.createMessage(MessageCreateSpec.create().withEmbeds(finalEmbed)).block();
         if (message != null)
         {
             scheduler.schedule(() -> boolReactions(message), 1L, TimeUnit.SECONDS);
@@ -138,7 +137,7 @@ public class TriviaGame
             if (wrongList != null)
                 correct.removeAll(wrongList);
         }
-        message.delete();
+        message.delete().subscribe();
         correctAnswerPost(channel, question, reactions[correctId], answers.get(correctId), correct);
     }
 
@@ -165,25 +164,25 @@ public class TriviaGame
 
     private void correctAnswerPost(MessageChannel channel, Questions.Question question, ReactionEmoji.Unicode emoji, String answer, List<User> correct)
     {
-        Consumer<EmbedCreateSpec> embed = spec ->
+        EmbedCreateSpec embed = EmbedCreateSpec.create().withTitle(parseText(question.getQuestion()));
         {
             DifficultyColour difficultyColour = DifficultyColour.fromString(question.getDifficulty());
             if (difficultyColour != null)
-                spec.setColor(difficultyColour.color);
-            spec.setTitle(parseText(question.getQuestion()));
+                embed = embed.withColor(difficultyColour.color);
+
             StringBuilder s = new StringBuilder();
             s.append(emoji.getRaw()).append(parseText(answer));
-            spec.setDescription(s.toString());
+            embed = embed.withDescription(s.toString());
             if (correct.size() > 0)
             {
                 s = new StringBuilder();
                 s.append("Correct: ");
                 //TODO: we should convert to members and get display names here
                 s.append(correct.stream().map(User::getUsername).collect(Collectors.joining(", ")));
-                spec.setFooter(s.toString(), "");
+                embed = embed.withFooter(EmbedCreateFields.Footer.of(s.toString(), ""));
             }
-        };
-        channel.createMessage(messageCreateSpec -> messageCreateSpec.setEmbed(embed)).block();
+        }
+        channel.createMessage(MessageCreateSpec.create().withEmbeds(embed)).block();
     }
 
 
