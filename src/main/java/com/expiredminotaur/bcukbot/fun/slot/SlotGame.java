@@ -2,7 +2,9 @@ package com.expiredminotaur.bcukbot.fun.slot;
 
 import com.expiredminotaur.bcukbot.discord.command.DiscordCommandEvent;
 import discord4j.core.object.entity.Message;
-import discord4j.core.spec.legacy.LegacyEmbedCreateSpec;
+import discord4j.core.spec.EmbedCreateFields;
+import discord4j.core.spec.EmbedCreateSpec;
+import discord4j.core.spec.MessageEditSpec;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
@@ -11,7 +13,6 @@ import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Consumer;
 
 @Component
 public class SlotGame
@@ -26,10 +27,9 @@ public class SlotGame
         Outcome outcome = getOutcome();
         String[] display = new String[outcome.result.length];
         Arrays.fill(display, "\u2753");
-        Consumer<LegacyEmbedCreateSpec> embed = spec -> spec.setTitle("Slot");
-        Consumer<LegacyEmbedCreateSpec> embedWithResult = embed.andThen(spec ->
-                spec.addField("Outcome", String.join(" ", display), false)
-        );
+        EmbedCreateSpec embed = EmbedCreateSpec.builder().title("Slot").build();
+
+        EmbedCreateSpec embedWithResult = embed.withFields(EmbedCreateFields.Field.of("Outcome", String.join(" ", display), false));
         Message message = event.respond(embedWithResult).block();
         if (message != null)
         {
@@ -38,14 +38,12 @@ public class SlotGame
         return Mono.empty().then();
     }
 
-    private void update(Message message, Consumer<LegacyEmbedCreateSpec> embed, Outcome outcome, String[] display, int i)
+    private void update(Message message, EmbedCreateSpec embed, Outcome outcome, String[] display, int i)
     {
         display[i] = outcome.result[i];
-        Consumer<LegacyEmbedCreateSpec> embedWithResult = embed.andThen(spec ->
-                spec.addField("Outcome", String.join(" ", display), false)
-        );
+        EmbedCreateSpec embedWithResult = embed.withFields(EmbedCreateFields.Field.of("Outcome", String.join(" ", display), false));
 
-        message.edit(messageEditSpec -> messageEditSpec.setEmbed(embedWithResult)).block();
+        message.edit(MessageEditSpec.builder().build().withEmbeds(embedWithResult)).block();
         if (++i < outcome.result.length)
         {
             int newIndex = i;
@@ -57,12 +55,13 @@ public class SlotGame
         }
     }
 
-    private void showResult(Message message, Consumer<LegacyEmbedCreateSpec> embed, Outcome outcome, String[] display)
+    private void showResult(Message message, EmbedCreateSpec embed, Outcome outcome, String[] display)
     {
-        Consumer<LegacyEmbedCreateSpec> embedWithResult = embed.andThen(spec ->
-                spec.addField("Result", (outcome.win ? "\u2705" : "\u274c"), false)
+        EmbedCreateSpec embedWithResult = embed.withFields(
+                EmbedCreateFields.Field.of("Outcome", String.join(" ", display), false),
+                EmbedCreateFields.Field.of("Result", (outcome.win ? "\u2705" : "\u274c"), false)
         );
-        message.edit(messageEditSpec -> messageEditSpec.setEmbed(embedWithResult)).block();
+        message.edit(MessageEditSpec.builder().build().withEmbeds(embedWithResult)).block();
     }
 
     public Outcome getOutcome()

@@ -3,10 +3,8 @@ package com.expiredminotaur.bcukbot.discord.command;
 import com.expiredminotaur.bcukbot.command.CommandEvent;
 import discord4j.core.event.domain.message.MessageCreateEvent;
 import discord4j.core.object.entity.Message;
-import discord4j.core.spec.legacy.LegacyEmbedCreateSpec;
+import discord4j.core.spec.EmbedCreateSpec;
 import reactor.core.publisher.Mono;
-
-import java.util.function.Consumer;
 
 public class DiscordCommandEvent extends CommandEvent<MessageCreateEvent>
 {
@@ -28,9 +26,9 @@ public class DiscordCommandEvent extends CommandEvent<MessageCreateEvent>
         return event.getMessage().getChannel().flatMap(c -> c.createMessage(message)).then();
     }
 
-    public Mono<Message> respond(Consumer<LegacyEmbedCreateSpec> embed)
+    public Mono<Message> respond(EmbedCreateSpec embed)
     {
-        return event.getMessage().getChannel().flatMap(c -> c.createMessage(m -> m.setEmbed(embed)));
+        return event.getMessage().getChannel().flatMap(c -> c.createMessage(embed));
     }
 
     @Override
