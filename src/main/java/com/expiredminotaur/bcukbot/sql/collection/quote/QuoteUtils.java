@@ -4,14 +4,13 @@ import com.expiredminotaur.bcukbot.sql.collection.CollectionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
 import java.util.Optional;
 
 @Component
 public class QuoteUtils extends CollectionUtil
 {
     @Autowired
-    private QuoteRepository quotes;
+    private QuoteService quotes;
 
     @Override
     public String add(String newEntry, String source)
@@ -39,12 +38,11 @@ public class QuoteUtils extends CollectionUtil
 
     public String random()
     {
-        List<Quote> list = quotes.findAll();
-        long qty = list.size();
+        long qty = quotes.count();
         if (qty > 0)
         {
             int idx = (int) (Math.random() * qty);
-            Quote quote = list.get(idx);
+            Quote quote = quotes.findAll(idx, 1).findFirst().get();
             return String.format("Quote %d: %s [%s]", quote.getId(), quote.getQuote(), quote.getDate().toString());
         }
         return "No quotes in database";
