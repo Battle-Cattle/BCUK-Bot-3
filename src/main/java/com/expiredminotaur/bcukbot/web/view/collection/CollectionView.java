@@ -1,6 +1,7 @@
 package com.expiredminotaur.bcukbot.web.view.collection;
 
 import com.expiredminotaur.bcukbot.Role;
+import com.expiredminotaur.bcukbot.sql.collection.CollectionService;
 import com.expiredminotaur.bcukbot.web.component.Form;
 import com.expiredminotaur.bcukbot.web.security.UserTools;
 import com.vaadin.flow.component.button.Button;
@@ -8,23 +9,21 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.provider.DataProvider;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
-import org.springframework.data.repository.CrudRepository;
-
-import java.util.ArrayList;
 
 public abstract class CollectionView<T> extends VerticalLayout
 {
     private final Grid<T> grid;
     private final UserTools userTools;
-    private final CrudRepository<T, Integer> repository;
+    private final CollectionService<T> service;
     private final Class<T> type;
     private EditForm editForm;
 
-    public CollectionView(UserTools userTools, CrudRepository<T, Integer> repository, Class<T> type)
+    public CollectionView(UserTools userTools, CollectionService<T> service, Class<T> type)
     {
         this.userTools = userTools;
-        this.repository = repository;
+        this.service = service;
         this.grid = new Grid<>(type);
         this.type = type;
     }
@@ -47,7 +46,10 @@ public abstract class CollectionView<T> extends VerticalLayout
         grid.getColumns().forEach(c -> c.setAutoWidth(true));
         grid.recalculateColumnWidths();
 
-        grid.setItems((ArrayList<T>) repository.findAll());
+        grid.setDataProvider(DataProvider.fromCallbacks(
+                query -> service.findAll(
+                        query.getOffset(), query.getLimit()),
+                query -> (int) service.count()));
 
         add(header, grid);
     }
@@ -63,7 +65,7 @@ public abstract class CollectionView<T> extends VerticalLayout
         @Override
         protected void saveData(T data)
         {
-            repository.save(data);
+            service.save(data);
             grid.getDataProvider().refreshItem(data);
         }
     }
