@@ -41,7 +41,7 @@ public class JustGivingAPI
     private String totalRaisedMessage = null;
     private ScheduledFuture<?> task = null;
 
-    public JustGivingAPI(@Autowired TwitchBot twitchBot, @Autowired DiscordBot discordBot, @Autowired @Lazy MusicHandler musicHandler)
+    public JustGivingAPI(@Lazy @Autowired TwitchBot twitchBot, @Lazy @Autowired DiscordBot discordBot, @Lazy @Autowired MusicHandler musicHandler)
     {
         this.twitchBot = twitchBot;
         this.discordBot = discordBot;

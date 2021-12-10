@@ -8,6 +8,7 @@ import com.expiredminotaur.bcukbot.twitch.TwitchBot;
 import com.expiredminotaur.bcukbot.twitch.command.chat.TwitchCommandEvent;
 import com.github.twitch4j.helix.domain.Stream;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
@@ -21,8 +22,10 @@ import java.util.stream.Collectors;
 @Component
 public class LiveStreamManager
 {
+    @Lazy
     @Autowired
     private TwitchBot twitchBot;
+    @Lazy
     @Autowired
     private DiscordBot discordBot;
     @Autowired

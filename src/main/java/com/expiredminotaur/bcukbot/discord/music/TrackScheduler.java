@@ -13,6 +13,7 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 import discord4j.core.object.presence.ClientActivity;
 import discord4j.core.object.presence.ClientPresence;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import java.util.concurrent.BlockingQueue;
@@ -21,9 +22,11 @@ import java.util.concurrent.LinkedBlockingDeque;
 @Component
 public class TrackScheduler extends AudioEventAdapter
 {
+    @Lazy
     @Autowired
     private DiscordBot discordBot;
 
+    @Lazy
     @Autowired
     TwitchBot twitchBot;
 
