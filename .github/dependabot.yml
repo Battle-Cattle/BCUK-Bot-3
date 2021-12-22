@@ -12,4 +12,4 @@ updates:
     ignore:
       - dependency-name: "com.vaadin:vaadin-bom"
       #ignore version of vaddin that are not LTS
-        versions: ["15.x.x", "16.x.x", "17.x.x", "18.x.x", "19.x.x", "20.x.x", "21.x.x"]
+        versions: ["15.x.x", "16.x.x", "17.x.x", "18.x.x", "19.x.x", "20.x.x", "21.x.x", "22.x.x"]
