@@ -41,4 +41,16 @@ public class BCUKRestController
     {
         musicHandler.leaveChannel();
     }
+
+    @PostMapping("/volume")
+    void volume(@RequestBody VolumeRequest request)
+    {
+        musicHandler.setVolume(request.getVolume());
+    }
+
+    @PostMapping("/pause")
+    void pause()
+    {
+        musicHandler.togglePause();
+    }
 }

@@ -231,15 +231,24 @@ public class MusicHandler
     public Mono<Void> setVolume(CommandEvent<?> event, String volume)
     {
         int vol = getInt(volume);
-        if (vol >= 0 && vol <= 100)
+        if (setVolume(vol))
         {
-            player.setVolume(vol);
-            settings.setMusicVolume(vol);
             return getVolume(event);
         } else
         {
             return event.respond("Please enter a number between 0 and 100");
         }
+    }
+
+    public boolean setVolume(int vol)
+    {
+        if (vol >= 0 && vol <= 100)
+        {
+            player.setVolume(vol);
+            settings.setMusicVolume(vol);
+            return true;
+        }
+        return false;
     }
 
     public Mono<Void> getVolume(CommandEvent<?> event)
@@ -250,12 +259,17 @@ public class MusicHandler
 
     public Mono<Void> togglePause(CommandEvent<?> event)
     {
-        player.setPaused(!player.isPaused());
+        togglePause();
 
         if (player.isPaused())
             return event.respond("Music Paused");
         else
             return event.respond("Music Resumed");
+    }
+
+    public void togglePause()
+    {
+        player.setPaused(!player.isPaused());
     }
 
     private int getInt(String s)

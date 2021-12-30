@@ -10,14 +10,11 @@ import com.expiredminotaur.bcukbot.sql.user.User;
 import com.expiredminotaur.bcukbot.sql.user.UserRepository;
 import com.expiredminotaur.bcukbot.twitch.command.chat.TwitchCommandEvent;
 import com.expiredminotaur.bcukbot.twitch.command.chat.TwitchCommands;
-import com.expiredminotaur.bcukbot.twitch.command.whisper.WhisperCommandEvent;
-import com.expiredminotaur.bcukbot.twitch.command.whisper.WhisperCommands;
 import com.github.philippheuer.credentialmanager.domain.OAuth2Credential;
 import com.github.philippheuer.events4j.simple.SimpleEventHandler;
 import com.github.twitch4j.TwitchClient;
 import com.github.twitch4j.TwitchClientBuilder;
 import com.github.twitch4j.chat.events.channel.ChannelMessageEvent;
-import com.github.twitch4j.common.events.user.PrivateMessageEvent;
 import com.github.twitch4j.helix.domain.Stream;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -39,8 +36,6 @@ public class TwitchBot implements BotService
     private final Logger log = LoggerFactory.getLogger(TwitchBot.class);
     @Autowired
     private TwitchCommands twitchCommands;
-    @Autowired
-    private WhisperCommands whisperCommands;
     @Autowired
     private SFXHandler sfxHandler;
     @Autowired
@@ -136,7 +131,6 @@ public class TwitchBot implements BotService
     {
         SimpleEventHandler handler = twitchClient.getEventManager().getEventHandler(SimpleEventHandler.class);
         handler.onEvent(ChannelMessageEvent.class, this::onChannelMessage);
-        handler.onEvent(PrivateMessageEvent.class, this::onWhisper);
     }
 
     private void onChannelMessage(ChannelMessageEvent event)
@@ -152,11 +146,6 @@ public class TwitchBot implements BotService
             if (custom != null)
                 event.getTwitchChat().sendMessage(event.getChannel().getName(), custom.getOutput());
         }
-    }
-
-    private void onWhisper(PrivateMessageEvent event)
-    {
-        whisperCommands.processCommand(new WhisperCommandEvent(event, twitchClient));
     }
 
     public void joinChannels()
