@@ -44,7 +44,7 @@ public class TwitchCommands extends Commands<TwitchCommandEvent>
         commands.put("!DadJoke", new TwitchCommand(JokeAPI::jokeCommand, TwitchPermissions::everyone));
         commands.put("!Joke", new TwitchCommand(e -> jokeUtils.processCommand(e), TwitchPermissions::everyone));
         commands.put("!Playing", new TwitchCommand(this::playing, TwitchPermissions::everyone));
-        commands.put("!Multi", new TwitchCommand(e -> liveStreamManager.getMultiTwitch(e), TwitchPermissions::everyone));
+        commands.put("!Multi", new TwitchCommand(e -> liveStreamManager.sendMultiTwitchMessage(e), TwitchPermissions::everyone));
         commands.put("!TotalRaised", new TwitchCommand(e -> justGivingAPI.amountRaised(e), TwitchPermissions::everyone));
         commands.put("!task", new TwitchCommand(this::task, TwitchPermissions::everyone));
     }
@@ -55,7 +55,7 @@ public class TwitchCommands extends Commands<TwitchCommandEvent>
         if (args.length == 2)
         {
             String channel = args[1].replace("@", ""); //Remove at in case someone dose @Username
-            return e.respond(
+            return e.multiRespond(liveStreamManager,
                     String.format("Go and check out %s's channel over at https://www.twitch.tv/%s",
                             channel, channel));
         }

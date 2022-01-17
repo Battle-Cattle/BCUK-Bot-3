@@ -60,15 +60,25 @@ public class LiveStreamManager
         });
     }
 
-    public Mono<Void> getMultiTwitch(TwitchCommandEvent event)
+    public MultiTwitch getMultiTwitch(String channelName)
     {
         for (MultiTwitchHandler mth : multiTwitchHandlers.values())
         {
-            MultiTwitch mt = mth.getMultiTwitch(event.getEvent().getChannel().getName());
+            MultiTwitch mt = mth.getMultiTwitch(channelName);
             if (mt != null)
             {
-                mt.sendToAllUsers(twitchBot);
+                return mt;
             }
+        }
+        return null;
+    }
+
+    public Mono<Void> sendMultiTwitchMessage(TwitchCommandEvent event)
+    {
+        MultiTwitch mt = getMultiTwitch(event.getEvent().getChannel().getName());
+        if (mt != null)
+        {
+            mt.sendLinkToAllUsers(event.getEvent().getTwitchChat());
         }
         return event.empty();
     }
