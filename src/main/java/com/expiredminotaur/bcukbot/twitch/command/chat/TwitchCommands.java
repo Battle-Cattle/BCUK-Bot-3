@@ -47,6 +47,7 @@ public class TwitchCommands extends Commands<TwitchCommandEvent>
         commands.put("!Multi", new TwitchCommand(e -> liveStreamManager.sendMultiTwitchMessage(e), TwitchPermissions::everyone));
         commands.put("!TotalRaised", new TwitchCommand(e -> justGivingAPI.amountRaised(e), TwitchPermissions::everyone));
         commands.put("!task", new TwitchCommand(this::task, TwitchPermissions::everyone));
+        commands.put("!321", new TwitchCommand(this::countdown, TwitchPermissions::everyone));
     }
 
     private Mono<Void> shoutOut(TwitchCommandEvent e)
@@ -83,5 +84,27 @@ public class TwitchCommands extends Commands<TwitchCommandEvent>
         if (punishment != null)
             return event.respond(String.format("Current Punishment: %s", punishment.getPunishment()));
         return event.respond("No Active Task");
+    }
+
+    private Mono<Void> countdown(TwitchCommandEvent event)
+    {
+        Thread thread = new Thread(() ->
+        {
+            try
+            {
+                event.multiRespond(liveStreamManager, "3").block();
+                Thread.sleep(1000);
+                event.multiRespond(liveStreamManager, "2").block();
+                Thread.sleep(1000);
+                event.multiRespond(liveStreamManager, "1").block();
+                Thread.sleep(1000);
+                event.multiRespond(liveStreamManager, "GO!").block();
+            } catch (InterruptedException e)
+            {
+                e.printStackTrace();
+            }
+        });
+        thread.start();
+        return event.empty();
     }
 }
