@@ -12,6 +12,7 @@ import com.expiredminotaur.bcukbot.twitch.command.chat.TwitchCommandEvent;
 import com.expiredminotaur.bcukbot.twitch.command.chat.TwitchCommands;
 import com.expiredminotaur.bcukbot.twitch.command.whisper.WhisperCommandEvent;
 import com.expiredminotaur.bcukbot.twitch.command.whisper.WhisperCommands;
+import com.expiredminotaur.bcukbot.twitch.streams.LiveStreamManager;
 import com.github.philippheuer.credentialmanager.domain.OAuth2Credential;
 import com.github.philippheuer.events4j.simple.SimpleEventHandler;
 import com.github.twitch4j.TwitchClient;
@@ -49,6 +50,8 @@ public class TwitchBot implements BotService
     private CommandRepository customCommands;
     @Autowired
     private CounterHandler counterHandler;
+    @Autowired
+    private LiveStreamManager liveStreamManager;
     private final UserRepository userRepository;
     private TwitchClient twitchClient;
     private ScheduledThreadPoolExecutor scheduledThreadPoolExecutor;
@@ -150,7 +153,12 @@ public class TwitchBot implements BotService
             counterHandler.processCommand(cEvent);
             CustomCommand custom = customCommands.findTwitch(event.getChannel().getName().toLowerCase(), command.toLowerCase());
             if (custom != null)
-                event.getTwitchChat().sendMessage(event.getChannel().getName(), custom.getOutput());
+            {
+                if (custom.isMultiTwitch())
+                    cEvent.multiRespond(liveStreamManager, custom.getOutput());
+                else
+                    cEvent.respond(custom.getOutput());
+            }
         }
     }
 
