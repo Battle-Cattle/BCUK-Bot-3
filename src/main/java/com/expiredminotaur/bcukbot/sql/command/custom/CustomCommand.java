@@ -27,6 +27,7 @@ public class CustomCommand
             joinColumns = @JoinColumn(name = "command_id"),
             inverseJoinColumns = @JoinColumn(name = "discord_id"))
     private Set<User> twitchEnabledUsers;
+    private boolean isMultiTwitch;
 
     public int getId()
     {
@@ -76,5 +77,15 @@ public class CustomCommand
     public void setTwitchEnabledUsers(Set<User> twitchEnabledUsers)
     {
         this.twitchEnabledUsers = twitchEnabledUsers;
+    }
+
+    public boolean isMultiTwitch()
+    {
+        return isMultiTwitch;
+    }
+
+    public void setMultiTwitch(boolean multiTwitch)
+    {
+        isMultiTwitch = multiTwitch;
     }
 }

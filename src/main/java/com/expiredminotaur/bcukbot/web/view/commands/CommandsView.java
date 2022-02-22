@@ -44,6 +44,7 @@ public class CommandsView extends HorizontalLayout
         output.setWidthFull();
         Checkbox discord = new Checkbox("Enable on Discord");
         MultiselectComboBox<User> twitchUsers = new MultiselectComboBox<>("Users");
+        Checkbox multiTwitch = new Checkbox("Send To All Multi Twitch Channels");
         twitchUsers.setItemLabelGenerator(User::getTwitchName);
         twitchUsers.setItems(users.findByIsTwitchBotEnabledIsTrue());
 
@@ -52,11 +53,13 @@ public class CommandsView extends HorizontalLayout
         binder.bind(output, "output");
         binder.bind(discord, "discordEnabled");
         binder.bind(twitchUsers, "twitchEnabledUsers");
+        binder.bind(multiTwitch, "multiTwitch");
 
         grid = new Grid<>(CustomCommand.class);
         grid.setItems(commands.findAll());
         grid.setColumns("trigger", "output", "discordEnabled");
         grid.addColumn(c -> c.getTwitchEnabledUsers().stream().map(User::getTwitchName).collect(Collectors.joining(", "))).setHeader("Twitch Enabled");
+        grid.addColumn("multiTwitch");
         EditForm editForm = new EditForm();
         grid.addColumn(new ComponentRenderer<>(c -> new Button("Edit", e -> editForm.open(c)))).setFlexGrow(0).setHeader("Edit");
         grid.getColumns().forEach(c -> c.setAutoWidth(true));
@@ -78,7 +81,7 @@ public class CommandsView extends HorizontalLayout
             }
         });
 
-        VerticalLayout left = new VerticalLayout(trigger, trigger, output, discord, twitchUsers, add);
+        VerticalLayout left = new VerticalLayout(trigger, trigger, output, discord, twitchUsers, multiTwitch, add);
         left.setSizeFull();
         left.setWidth("25%");
         VerticalLayout right = new VerticalLayout(grid);
