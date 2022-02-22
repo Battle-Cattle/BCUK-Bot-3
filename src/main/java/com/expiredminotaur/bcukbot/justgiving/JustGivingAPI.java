@@ -5,6 +5,8 @@ import com.expiredminotaur.bcukbot.command.CommandEvent;
 import com.expiredminotaur.bcukbot.discord.DiscordBot;
 import com.expiredminotaur.bcukbot.discord.music.MusicHandler;
 import com.expiredminotaur.bcukbot.twitch.TwitchBot;
+import com.expiredminotaur.bcukbot.twitch.command.chat.TwitchCommandEvent;
+import com.expiredminotaur.bcukbot.twitch.streams.LiveStreamManager;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
@@ -36,16 +38,18 @@ public class JustGivingAPI
     private final TwitchBot twitchBot;
     private final DiscordBot discordBot;
     private final MusicHandler musicHandler;
+    private final LiveStreamManager liveStreamManager;
     private final JustGivingSettings settings;
     private String data;
     private String totalRaisedMessage = null;
     private ScheduledFuture<?> task = null;
 
-    public JustGivingAPI(@Lazy @Autowired TwitchBot twitchBot, @Lazy @Autowired DiscordBot discordBot, @Lazy @Autowired MusicHandler musicHandler)
+    public JustGivingAPI(@Lazy @Autowired TwitchBot twitchBot, @Lazy @Autowired DiscordBot discordBot, @Lazy @Autowired MusicHandler musicHandler, @Lazy @Autowired LiveStreamManager liveStreamManager)
     {
         this.twitchBot = twitchBot;
         this.discordBot = discordBot;
         this.musicHandler = musicHandler;
+        this.liveStreamManager = liveStreamManager;
         JustGivingSettings settings;
         try (FileReader fr = new FileReader(JustGivingSettings.fileName))
         {
@@ -174,7 +178,10 @@ public class JustGivingAPI
     {
         if (totalRaisedMessage != null)
         {
-            return event.respond(totalRaisedMessage);
+            if (event instanceof TwitchCommandEvent)
+                return ((TwitchCommandEvent) event).multiRespond(liveStreamManager, totalRaisedMessage);
+            else
+                return event.respond(totalRaisedMessage);
         }
         return event.empty();
     }

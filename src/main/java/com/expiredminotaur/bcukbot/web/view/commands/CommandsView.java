@@ -100,6 +100,7 @@ public class CommandsView extends HorizontalLayout
             addField("Output", new TextField(), "output").setWidthFull();
             addField("Discord Enabled", new Checkbox(), "discordEnabled");
             MultiselectComboBox<User> twitchUsers = addField("Users", new MultiselectComboBox<>(), "twitchEnabledUsers");
+            addField("Send To All Multi Twitch Channels", new Checkbox(), "multiTwitch");
             twitchUsers.setItemLabelGenerator(User::getTwitchName);
             twitchUsers.setItems(users.findByIsTwitchBotEnabledIsTrue());
         }
