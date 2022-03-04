@@ -8,7 +8,6 @@ import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinService;
-import com.vaadin.flow.server.VaadinSession;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @Route(value = "", layout = MainLayout.class)
@@ -20,8 +19,7 @@ public class MainView extends VerticalLayout
         String username = userTools.getCurrentUsersName();
         setSizeFull();
         setJustifyContentMode(JustifyContentMode.CENTER);
-        String resolvedImage = VaadinService.getCurrent().resolveResource(
-                "img/BCUK_BOT.png", VaadinSession.getCurrent().getBrowser());
+        String resolvedImage = VaadinService.getCurrent().resolveResource("img/BCUK_BOT.png");
         setDefaultHorizontalComponentAlignment(Alignment.CENTER);
         Image logo = new Image(resolvedImage, "logo");
         Paragraph user = new Paragraph("Logged in as: " + username + " (" + userID + ")");
