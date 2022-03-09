@@ -34,12 +34,8 @@ import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.menubar.MenuBar;
 import com.vaadin.flow.component.menubar.MenuBarVariant;
 import com.vaadin.flow.server.VaadinService;
-import com.vaadin.flow.server.VaadinSession;
-import com.vaadin.flow.theme.Theme;
-import com.vaadin.flow.theme.lumo.Lumo;
 import org.springframework.beans.factory.annotation.Autowired;
 
-@Theme(value = Lumo.class, variant = Lumo.DARK)
 public class MainLayout extends AppLayout
 {
     private final Div childWrapper = new Div();
@@ -50,8 +46,7 @@ public class MainLayout extends AppLayout
     {
         this.userTools = userTools;
         MenuBar menu = new MenuBar();
-        String resolvedImage = VaadinService.getCurrent().resolveResource(
-                "img/BCUK.png", VaadinSession.getCurrent().getBrowser());
+        String resolvedImage = VaadinService.getCurrent().resolveResource("img/BCUK.png");
         Image logo = new Image(resolvedImage, "logo");
         menu.addThemeVariants(MenuBarVariant.LUMO_PRIMARY);
 

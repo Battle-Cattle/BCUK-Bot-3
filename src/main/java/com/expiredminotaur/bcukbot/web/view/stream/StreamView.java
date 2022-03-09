@@ -5,7 +5,6 @@ import com.vaadin.flow.component.DetachEvent;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import com.vaadin.flow.component.page.Push;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.shared.Registration;
 import org.atmosphere.cpr.Broadcaster;
@@ -15,7 +14,6 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 
-@Push
 @Route("/stream")
 public class StreamView extends HorizontalLayout
 {

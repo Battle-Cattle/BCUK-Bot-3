@@ -1,7 +1,5 @@
 server:
   port: 9090
-vaadin:
-  compatibilityMode: false
 logging:
   level:
     org:
