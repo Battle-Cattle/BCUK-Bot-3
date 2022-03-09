@@ -32,7 +32,7 @@ public class StreamData
             if (!Objects.equals(stream.getGameId(), newStream.getGameId()))
             {
                 stream = newStream;
-                if (group.isDeleteOldPosts())
+                if (group.isDeleteOldPosts() && discordMessage != null)
                 {
                     discordMessage.delete("Old Stream Message").subscribe();
                 }
@@ -46,7 +46,7 @@ public class StreamData
     {
         if (System.currentTimeMillis() - lastUpdated > TimeUnit.MINUTES.toMillis(5))
         {
-            if (group.isDeleteOldPosts())
+            if (group.isDeleteOldPosts() && discordMessage != null)
             {
                 discordMessage.delete("Old Stream Message").subscribe();
             }
