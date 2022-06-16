@@ -16,6 +16,11 @@ public abstract class CollectionService<T>
         this.repository = repository;
     }
 
+    public List<T> findAll()
+    {
+        return (List<T>) repository.findAll();
+    }
+
     public Stream<T> findAll(int offset, int pageSize)
     {
         return repository.findAll(PageRequest.of(offset / pageSize, pageSize)).stream();
@@ -35,10 +40,5 @@ public abstract class CollectionService<T>
     public Optional<T> findById(int id)
     {
         return repository.findById(id);
-    }
-
-    public List<T> findAll()
-    {
-        return (List<T>) repository.findAll();
     }
 }
