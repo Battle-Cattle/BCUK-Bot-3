@@ -24,7 +24,7 @@ spring:
             authorizationUri: https://discordapp.com/api/oauth2/authorize
             tokenUri: https://discordapp.com/api/oauth2/token
             userInfoUri: https://discordapp.com/api/users/@me
-            usernameAttribute: username
+            userNameAttribute: username
   datasource:
     driverClassName: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://127.0.0.1:3306/bcukbot?serverTimezone=UTC
