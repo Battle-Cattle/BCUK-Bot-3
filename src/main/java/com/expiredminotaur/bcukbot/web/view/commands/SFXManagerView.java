@@ -36,19 +36,19 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-@Route(value = "sfx", layout = MainLayout.class)
+@Route(value = "sfx_manager", layout = MainLayout.class)
 @AccessLevel(Role.MOD)
-public class SFXView extends HorizontalLayout
+public class SFXManagerView extends HorizontalLayout
 {
     private static final SFXCategory NO_CATEGORY = new SFXCategory("Uncategorised");
-    private final Logger log = LoggerFactory.getLogger(SFXView.class);
+    private final Logger log = LoggerFactory.getLogger(SFXManagerView.class);
     private final File folder = new File("sfx");
     private final ComboBox<SFXCategory> categoryFilter = new ComboBox<>("Filter by Category");
     private final Grid<SFX> sfxCommandGrid = new Grid<>(SFX.class);
     private final SFXRepository sfxCommands;
     private final SFXCategoryRepository sfxCategories;
 
-    public SFXView(@Autowired SFXRepository sfxCommands, @Autowired SFXCategoryRepository sfxCategories)
+    public SFXManagerView(@Autowired SFXRepository sfxCommands, @Autowired SFXCategoryRepository sfxCategories)
     {
         this.sfxCommands = sfxCommands;
         this.sfxCategories = sfxCategories;
