@@ -2,7 +2,10 @@ package com.expiredminotaur.bcukbot.web.security;
 
 import com.expiredminotaur.bcukbot.Role;
 import com.expiredminotaur.bcukbot.sql.user.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
@@ -19,6 +22,8 @@ public class UserTools
     @Autowired
     private UserRepository users;
 
+    private final Logger logger = LoggerFactory.getLogger(UserTools.class);
+
     public String getCurrentUsersName()
     {
         return getPrincipalAttribute("username");
@@ -26,7 +31,15 @@ public class UserTools
 
     public long getCurrentUsersID()
     {
-        return Long.parseLong(getPrincipalAttribute("id"));
+        String id = getPrincipalAttribute("id");
+        try
+        {
+            return Long.parseLong(id);
+        } catch (NumberFormatException e)
+        {
+            logger.warn("Failed to parse user ID: " + id);
+            return -1;
+        }
     }
 
     public String getCurrentUsersToken()
@@ -38,7 +51,14 @@ public class UserTools
 
     public OAuth2AuthenticationToken getAuthentication()
     {
-        return (OAuth2AuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth instanceof OAuth2AuthenticationToken)
+        {
+            return (OAuth2AuthenticationToken) auth;
+        } else
+        {
+            return null;
+        }
     }
 
     private String getPrincipalAttribute(String key)

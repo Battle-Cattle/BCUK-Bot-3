@@ -3,6 +3,7 @@ package com.expiredminotaur.bcukbot.web.view;
 import com.expiredminotaur.bcukbot.discord.music.MusicHandler;
 import com.expiredminotaur.bcukbot.discord.music.TrackData;
 import com.expiredminotaur.bcukbot.web.layout.MainLayout;
+import com.expiredminotaur.bcukbot.web.security.AccessLevel;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Anchor;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 
+@AccessLevel
 @Route(value = "music", layout = MainLayout.class)
 public class MusicView extends VerticalLayout
 {

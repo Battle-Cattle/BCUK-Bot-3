@@ -12,6 +12,7 @@ import com.vaadin.flow.router.Route;
 import discord4j.common.util.Snowflake;
 import discord4j.core.object.entity.Guild;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 
 import java.util.List;
 import java.util.Optional;
@@ -50,7 +51,9 @@ public class ProcessLoginView extends Div implements AfterNavigationObserver
             UI.getCurrent().getPage().setLocation("/");
         } else
         {
-            userTools.getAuthentication().setAuthenticated(false);
+            OAuth2AuthenticationToken auth = userTools.getAuthentication();
+            if (auth != null)
+                auth.setAuthenticated(false);
             UI.getCurrent().navigate(UnauthorisedView.class);
         }
     }

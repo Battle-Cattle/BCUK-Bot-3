@@ -6,7 +6,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.RequestEntity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.oauth2.client.endpoint.DefaultAuthorizationCodeTokenResponseClient;
@@ -48,7 +47,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter
     {
         http
                 .authorizeRequests().requestMatchers(SecurityConfiguration::isFrameworkInternalRequest).permitAll()
-                .and().authorizeRequests().anyRequest().authenticated()
                 .and().csrf().disable()
                 .logout().logoutUrl(LOGOUT_URL).logoutSuccessUrl(LOGOUT_SUCCESS_URL)
                 .and().oauth2Login()
@@ -89,24 +87,5 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter
         });
 
         return service;
-    }
-
-    @Override
-    public void configure(WebSecurity web)
-    {
-        web.ignoring().antMatchers(
-                "/VAADIN/**",
-                "/favicon.ico",
-                "/manifest.webmanifest",
-                "/sw.js",
-                "/offline-page.html",
-                "/frontend/**",
-                "/img/**",
-                "/icons/**",
-                "/unauthorised",
-                "/playsfx",
-                "/join",
-                "/leave",
-                "/stream");
     }
 }

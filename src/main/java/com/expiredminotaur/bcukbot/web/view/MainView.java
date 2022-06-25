@@ -2,6 +2,7 @@ package com.expiredminotaur.bcukbot.web.view;
 
 import com.expiredminotaur.bcukbot.sql.collection.quote.QuoteUtils;
 import com.expiredminotaur.bcukbot.web.layout.MainLayout;
+import com.expiredminotaur.bcukbot.web.security.AccessLevel;
 import com.expiredminotaur.bcukbot.web.security.UserTools;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Paragraph;
@@ -10,6 +11,7 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+@AccessLevel
 @Route(value = "", layout = MainLayout.class)
 public class MainView extends VerticalLayout
 {
