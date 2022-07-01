@@ -56,7 +56,7 @@ public class MusicHandler
 
     private void registerSources()
     {
-        YoutubeAudioSourceManager youtubeAudioSourceManager = new YoutubeAudioSourceManager(true);
+        YoutubeAudioSourceManager youtubeAudioSourceManager = new YoutubeAudioSourceManager();
         youtubeAudioSourceManager.setPlaylistPageCount(100);
         playerManager.registerSourceManager(youtubeAudioSourceManager);
 
