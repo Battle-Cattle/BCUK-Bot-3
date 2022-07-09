@@ -19,7 +19,7 @@ import com.expiredminotaur.bcukbot.web.view.commands.AliasView;
 import com.expiredminotaur.bcukbot.web.view.commands.BannedPhrasesView;
 import com.expiredminotaur.bcukbot.web.view.commands.CommandsView;
 import com.expiredminotaur.bcukbot.web.view.commands.CountersView;
-import com.expiredminotaur.bcukbot.web.view.commands.SFXView;
+import com.expiredminotaur.bcukbot.web.view.commands.SFXManagerView;
 import com.expiredminotaur.bcukbot.web.view.settings.JustGivingView;
 import com.expiredminotaur.bcukbot.web.view.settings.MusicSettingsView;
 import com.expiredminotaur.bcukbot.web.view.settings.StreamAnnouncementsView;
@@ -89,7 +89,7 @@ public class MainLayout extends AppLayout
     {
         addMenuItem(subMenu, "Commands", CommandsView.class);
         addMenuItem(subMenu, "Counters", CountersView.class);
-        addMenuItem(subMenu, "SFX", SFXView.class);
+        addMenuItem(subMenu, "SFX", SFXManagerView.class);
         addMenuItem(subMenu, "Alias", AliasView.class);
         addMenuItem(subMenu, "Banned Phrases", BannedPhrasesView.class);
     }

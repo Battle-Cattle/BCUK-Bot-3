@@ -1,0 +1,8 @@
+.sfx-view .header {
+    margin-top: var(--lumo-space-s);
+    margin-bottom: var(--lumo-space-s);
+}
+
+.sfx-view .filter {
+    padding-right: var(--lumo-space-s);
+}

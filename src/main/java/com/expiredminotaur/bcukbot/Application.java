@@ -15,7 +15,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableCaching
 @EnableScheduling
 @SpringBootApplication(exclude = {ErrorMvcAutoConfiguration.class})
-@Theme(themeClass = Lumo.class, variant = Lumo.DARK)
+@Theme(value = "bcuk-bot", variant = Lumo.DARK)
 public class Application extends SpringBootServletInitializer implements AppShellConfigurator
 {
     public static void main(String[] args)
