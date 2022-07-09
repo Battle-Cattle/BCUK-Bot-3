@@ -53,11 +53,11 @@ public class SFXManagerView extends HorizontalLayout
         this.sfxCommands = sfxCommands;
         this.sfxCategories = sfxCategories;
         setSizeFull();
-        VerticalLayout fileManagerLayout = new VerticalLayout();
+
         MemoryBuffer buffer = new MemoryBuffer();
         Upload upload = new Upload(buffer);
         Text message = new Text("");
-        Grid<String> fileList = new Grid<>();
+
         if (!folder.exists())
         {
             if (!folder.mkdir())
@@ -70,6 +70,9 @@ public class SFXManagerView extends HorizontalLayout
         upload.setAcceptedFileTypes(".mp3", ".flac", ".wav", ".mp4", ".m4a", ".ogg", ".aac", ".opus");
         upload.addStartedListener(event -> message.setText(""));
         upload.addFileRejectedListener(event -> message.setText(event.getErrorMessage()));
+
+        Grid<String> fileList = new Grid<>();
+
         upload.addSucceededListener(event ->
         {
             try
@@ -97,12 +100,11 @@ public class SFXManagerView extends HorizontalLayout
         Grid.Column<String> column = fileList.addColumn(s -> s);
         column.setHeader("Files");
         fileList.setItems(folder.list());
+
+        VerticalLayout fileManagerLayout = new VerticalLayout();
         fileManagerLayout.add(upload, message, fileList);
 
-        VerticalLayout commandManagerLayout = new VerticalLayout();
-
         SfxForm sfxForm = new SfxForm();
-        Button addTriggerButton = new Button("Add Trigger", e -> sfxForm.open(new SFX()));
 
         sfxCommandGrid.setColumns("triggerCommand", "file", "weight", "hidden");
         sfxCommandGrid.addColumn(this::getCategory).setHeader("Category")
@@ -120,9 +122,13 @@ public class SFXManagerView extends HorizontalLayout
         updateGrid();
 
         SFXCategoryForm categoryForm = new SFXCategoryForm();
+
+        Button addTriggerButton = new Button("Add Trigger", e -> sfxForm.open(new SFX()));
         Button addCategoryButton = new Button("Add Category", e -> categoryForm.open(new SFXCategory()));
 
         HorizontalLayout buttons = new HorizontalLayout(addTriggerButton, addCategoryButton);
+
+        VerticalLayout commandManagerLayout = new VerticalLayout();
         commandManagerLayout.add(buttons, categoryFilter, sfxCommandGrid);
 
         add(fileManagerLayout, commandManagerLayout);
