@@ -17,6 +17,7 @@ public class LoginView extends VerticalLayout
         setDefaultHorizontalComponentAlignment(Alignment.CENTER);
         String resolvedImage = VaadinService.getCurrent().resolveResource("img/BCUK_BOT.png");
         Image logo = new Image(resolvedImage, "logo");
+        logo.setMaxWidth("100%");
         Button button = new Button("Login", e -> getUI().ifPresent(ui -> ui.getPage().setLocation("/oauth2/authorization/discord")));
         button.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         add(logo, button);

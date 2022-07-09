@@ -24,6 +24,7 @@ public class MainView extends VerticalLayout
         String resolvedImage = VaadinService.getCurrent().resolveResource("img/BCUK_BOT.png");
         setDefaultHorizontalComponentAlignment(Alignment.CENTER);
         Image logo = new Image(resolvedImage, "logo");
+        logo.setMaxWidth("100%");
         Paragraph user = new Paragraph("Logged in as: " + username + " (" + userID + ")");
         Paragraph quote = new Paragraph(quoteUtils.random());
 
