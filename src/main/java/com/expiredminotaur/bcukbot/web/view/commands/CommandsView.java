@@ -10,6 +10,7 @@ import com.expiredminotaur.bcukbot.web.layout.MainLayout;
 import com.expiredminotaur.bcukbot.web.security.AccessLevel;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.Checkbox;
+import com.vaadin.flow.component.combobox.MultiSelectComboBox;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -19,7 +20,6 @@ import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.Route;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.vaadin.gatanaso.MultiselectComboBox;
 
 import java.util.stream.Collectors;
 
@@ -43,7 +43,7 @@ public class CommandsView extends HorizontalLayout
         TextField output = new TextField("Output");
         output.setWidthFull();
         Checkbox discord = new Checkbox("Enable on Discord");
-        MultiselectComboBox<User> twitchUsers = new MultiselectComboBox<>("Users");
+        MultiSelectComboBox<User> twitchUsers = new MultiSelectComboBox<>("Users");
         Checkbox multiTwitch = new Checkbox("Send To All Multi Twitch Channels");
         twitchUsers.setItemLabelGenerator(User::getTwitchName);
         twitchUsers.setItems(users.findByIsTwitchBotEnabledIsTrue());
@@ -99,7 +99,7 @@ public class CommandsView extends HorizontalLayout
             addField("Trigger", new TextField(), "trigger").setWidthFull();
             addField("Output", new TextField(), "output").setWidthFull();
             addField("Discord Enabled", new Checkbox(), "discordEnabled");
-            MultiselectComboBox<User> twitchUsers = addField("Users", new MultiselectComboBox<>(), "twitchEnabledUsers");
+            MultiSelectComboBox<User> twitchUsers = addField("Users", new MultiSelectComboBox<>(), "twitchEnabledUsers");
             addField("Send To All Multi Twitch Channels", new Checkbox(), "multiTwitch");
             twitchUsers.setItemLabelGenerator(User::getTwitchName);
             twitchUsers.setItems(users.findByIsTwitchBotEnabledIsTrue());

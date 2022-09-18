@@ -9,6 +9,7 @@ import com.expiredminotaur.bcukbot.web.layout.MainLayout;
 import com.expiredminotaur.bcukbot.web.security.AccessLevel;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.Checkbox;
+import com.vaadin.flow.component.combobox.MultiSelectComboBox;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -19,7 +20,6 @@ import com.vaadin.flow.router.Route;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.vaadin.gatanaso.MultiselectComboBox;
 
 @Route(value = "justgiving", layout = MainLayout.class)
 @AccessLevel(Role.MANAGER)
@@ -32,7 +32,7 @@ public class JustGivingView extends VerticalLayout
         Binder<JustGivingSettings> binder = new Binder<>(JustGivingSettings.class);
 
         Checkbox enabled = new Checkbox("Enabled");
-        MultiselectComboBox<String> channels = new MultiselectComboBox<>("Twitch Channels");
+        MultiSelectComboBox<String> channels = new MultiSelectComboBox<>("Twitch Channels");
         TextField discordChannel = new TextField("Discord Channel ID (Set to -1 to disable)");
         discordChannel.setWidthFull();
         TextField appId = new TextField("App ID");
