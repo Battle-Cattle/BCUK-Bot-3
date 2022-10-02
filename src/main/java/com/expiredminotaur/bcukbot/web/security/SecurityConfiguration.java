@@ -31,7 +31,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter
     private static final String LOGIN_URL = "/login";
     private static final String LOGIN_PROCESS_IRL = "/login/process";
     private static final String LOGOUT_URL = "/logout";
-    private static final String LOGOUT_SUCCESS_URL = "/login/process";
+    private static final String LOGOUT_SUCCESS_URL = "/";
 
     static boolean isFrameworkInternalRequest(HttpServletRequest request)
     {
