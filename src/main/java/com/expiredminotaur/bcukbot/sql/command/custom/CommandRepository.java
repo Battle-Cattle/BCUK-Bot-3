@@ -5,6 +5,7 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -17,11 +18,11 @@ public interface CommandRepository extends CrudRepository<CustomCommand, Integer
 
     @Query("from CustomCommand where isDiscordEnabled=true and lower(triggerString)=:trigger")
     @Cacheable(value = "CustomCommand")
-    CustomCommand findDiscord(String trigger);
+    CustomCommand findDiscord(@Param("trigger") String trigger);
 
     @Query("from CustomCommand c, in (c.twitchEnabledUsers) u where lower(u.twitchName)=:channel and c.triggerString=:trigger")
     @Cacheable(value = "CustomCommand")
-    CustomCommand findTwitch(String channel, String trigger);
+    CustomCommand findTwitch(@Param("channel") String channel, @Param("trigger") String trigger);
 
     @Override
     @CacheEvict(value = "CustomCommand", allEntries = true)

@@ -5,6 +5,7 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -17,7 +18,7 @@ public interface AliasRepository extends CrudRepository<Alias, Integer>
 
     @Query("from Alias where lower(shortCommand)=:command")
     @Cacheable(value = "Alias")
-    List<Alias> findByTrigger(String command);
+    List<Alias> findByTrigger(@Param("command") String command);
 
     @Override
     @CacheEvict(value = "Alias", allEntries = true)

@@ -5,6 +5,7 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -16,10 +17,10 @@ public interface CounterRepository extends CrudRepository<Counter, Integer>
     List<Counter> findAll();
 
     @Query("from Counter where lower(triggerCommand)=:message")
-    List<Counter> findByTrigger(String message);
+    List<Counter> findByTrigger(@Param("message") String message);
 
     @Query("from Counter where lower(checkCommand)=:message")
-    List<Counter> findByCheck(String message);
+    List<Counter> findByCheck(@Param("message") String message);
 
     @Override
     @CacheEvict(value = "Counters", allEntries = true)
