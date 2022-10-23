@@ -93,4 +93,8 @@ public class LiveStreamManager
         return false;
     }
 
+    public String getLastGame(String channel)
+    {
+        return twitchBot.getLastGame(channel);
+    }
 }
