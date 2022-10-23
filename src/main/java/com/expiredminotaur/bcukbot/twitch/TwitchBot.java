@@ -19,6 +19,7 @@ import com.github.twitch4j.TwitchClient;
 import com.github.twitch4j.TwitchClientBuilder;
 import com.github.twitch4j.chat.events.channel.ChannelMessageEvent;
 import com.github.twitch4j.common.events.user.PrivateMessageEvent;
+import com.github.twitch4j.helix.domain.ChannelInformation;
 import com.github.twitch4j.helix.domain.Stream;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -31,6 +32,7 @@ import org.springframework.stereotype.Component;
 
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 
@@ -188,5 +190,17 @@ public class TwitchBot implements BotService
     public List<Stream> getStreams(List<String> channels)
     {
         return twitchClient.getHelix().getStreams(accessToken, "", null, 1, null, null, null, channels).execute().getStreams();
+    }
+
+    public String getLastGame(String channel)
+    {
+        List<com.github.twitch4j.helix.domain.User> uList = twitchClient.getHelix().getUsers(accessToken, null, Collections.singletonList(channel)).execute().getUsers();
+        if (uList.size() == 0)
+            return null;
+        String userID = uList.get(0).getId();
+        List<ChannelInformation> ciList = twitchClient.getHelix().getChannelInformation(accessToken, Collections.singletonList(userID)).execute().getChannels();
+        if (ciList.size() == 0)
+            return null;
+        return ciList.get(0).getGameName();
     }
 }

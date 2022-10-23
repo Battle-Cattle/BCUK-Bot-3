@@ -56,6 +56,13 @@ public class TwitchCommands extends Commands<TwitchCommandEvent>
         if (args.length == 2)
         {
             String channel = args[1].replace("@", ""); //Remove at in case someone dose @Username
+            String game = liveStreamManager.getLastGame(channel);
+            if (game != null && !game.isEmpty())
+            {
+                return e.multiRespond(liveStreamManager,
+                        String.format("Go and check out %s's channel over at https://www.twitch.tv/%s last playing %s",
+                                channel, channel, game));
+            }
             return e.multiRespond(liveStreamManager,
                     String.format("Go and check out %s's channel over at https://www.twitch.tv/%s",
                             channel, channel));
