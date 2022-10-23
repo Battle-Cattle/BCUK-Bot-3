@@ -68,12 +68,16 @@ public class TwitchBot implements BotService
 
     private static String getAccessToken() throws Exception
     {
-        String url = "https://id.twitch.tv/oauth2/token?" + "client_id=" + URLEncoder.encode(System.getenv("BCUK_BOT_TWITCH_CLIENT_ID"), "UTF-8") + "&client_secret=" + URLEncoder.encode(System.getenv("BCUK_BOT_TWITCH_CLIENT_SECRET"), "UTF-8") + "&grant_type=client_credentials";
+        String url = "https://id.twitch.tv/oauth2/token?" +
+                "client_id=" + URLEncoder.encode(System.getenv("BCUK_BOT_TWITCH_CLIENT_ID"), "UTF-8") +
+                "&client_secret=" + URLEncoder.encode(System.getenv("BCUK_BOT_TWITCH_CLIENT_SECRET"), "UTF-8") +
+                "&grant_type=client_credentials";
         JsonElement json = JsonParser.parseReader(HttpHandler.postRequest(new URL(url)));
         if (json.isJsonObject())
         {
             return ((JsonObject) json).get("access_token").getAsString();
-        } else throw new RuntimeException(("Error reading access token"));
+        } else
+            throw new RuntimeException(("Error reading access token"));
     }
 
     @Override
@@ -91,7 +95,15 @@ public class TwitchBot implements BotService
         TwitchClientBuilder clientBuilder = TwitchClientBuilder.builder();
         OAuth2Credential chatOAuth = new OAuth2Credential("twitch", System.getenv("BCUK_BOT_TWITCH_CHAT_OAUTH"));
         OAuth2Credential appOAuth = new OAuth2Credential("twitch", accessToken);
-        twitchClient = clientBuilder.withClientId(System.getenv("BCUK_BOT_TWITCH_CLIENT_ID")).withClientSecret(System.getenv("BCUK_BOT_TWITCH_CLIENT_SECRET")).withEnableHelix(true).withChatAccount(chatOAuth).withEnableChat(true).withScheduledThreadPoolExecutor(scheduledThreadPoolExecutor).withDefaultAuthToken(appOAuth).build();
+        twitchClient = clientBuilder
+                .withClientId(System.getenv("BCUK_BOT_TWITCH_CLIENT_ID"))
+                .withClientSecret(System.getenv("BCUK_BOT_TWITCH_CLIENT_SECRET"))
+                .withEnableHelix(true)
+                .withChatAccount(chatOAuth)
+                .withEnableChat(true)
+                .withScheduledThreadPoolExecutor(scheduledThreadPoolExecutor)
+                .withDefaultAuthToken(appOAuth)
+                .build();
         setupEvents();
         joinChannels();
     }
@@ -113,7 +125,11 @@ public class TwitchBot implements BotService
 
     private void setupThreads()
     {
-        BasicThreadFactory threadFactory = new BasicThreadFactory.Builder().namingPattern("twitch_chat-%d").daemon(false).priority(Thread.NORM_PRIORITY).build();
+        BasicThreadFactory threadFactory = new BasicThreadFactory.Builder()
+                .namingPattern("twitch_chat-%d")
+                .daemon(false)
+                .priority(Thread.NORM_PRIORITY)
+                .build();
 
         scheduledThreadPoolExecutor = new ScheduledThreadPoolExecutor(Runtime.getRuntime().availableProcessors());
         scheduledThreadPoolExecutor.setThreadFactory(threadFactory);
@@ -140,8 +156,10 @@ public class TwitchBot implements BotService
             CustomCommand custom = customCommands.findTwitch(event.getChannel().getName().toLowerCase(), command.toLowerCase());
             if (custom != null)
             {
-                if (custom.isMultiTwitch()) cEvent.multiRespond(liveStreamManager, custom.getOutput());
-                else cEvent.respond(custom.getOutput());
+                if (custom.isMultiTwitch())
+                    cEvent.multiRespond(liveStreamManager, custom.getOutput());
+                else
+                    cEvent.respond(custom.getOutput());
             }
         }
     }
@@ -177,10 +195,12 @@ public class TwitchBot implements BotService
     public String getLastGame(String channel)
     {
         List<com.github.twitch4j.helix.domain.User> uList = twitchClient.getHelix().getUsers(accessToken, null, Collections.singletonList(channel)).execute().getUsers();
-        if (uList.size() == 0) return null;
+        if (uList.size() == 0)
+            return null;
         String userID = uList.get(0).getId();
         List<ChannelInformation> ciList = twitchClient.getHelix().getChannelInformation(accessToken, Collections.singletonList(userID)).execute().getChannels();
-        if (ciList.size() == 0) return null;
+        if (ciList.size() == 0)
+            return null;
         return ciList.get(0).getGameName();
     }
 }
