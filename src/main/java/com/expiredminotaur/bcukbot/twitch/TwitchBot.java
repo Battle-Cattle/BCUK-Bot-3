@@ -17,17 +17,13 @@ import com.github.philippheuer.credentialmanager.domain.OAuth2Credential;
 import com.github.philippheuer.events4j.simple.SimpleEventHandler;
 import com.github.twitch4j.TwitchClient;
 import com.github.twitch4j.TwitchClientBuilder;
-import com.github.twitch4j.TwitchClientHelper;
-import com.github.twitch4j.chat.TwitchChat;
 import com.github.twitch4j.chat.events.channel.ChannelMessageEvent;
 import com.github.twitch4j.common.events.user.PrivateMessageEvent;
 import com.github.twitch4j.helix.domain.ChannelInformation;
 import com.github.twitch4j.helix.domain.Stream;
-import com.github.twitch4j.pubsub.TwitchPubSub;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +33,6 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 @Component
 public class TwitchBot implements BotService
@@ -59,7 +54,6 @@ public class TwitchBot implements BotService
     private LiveStreamManager liveStreamManager;
     private final UserRepository userRepository;
     private TwitchClient twitchClient;
-    private ScheduledThreadPoolExecutor scheduledThreadPoolExecutor;
     private String accessToken;
 
     public TwitchBot(@Autowired UserRepository userRepository)
@@ -94,7 +88,6 @@ public class TwitchBot implements BotService
             log.error("Failed to get access Token", e);
             return;
         }
-        setupThreads();
         TwitchClientBuilder clientBuilder = TwitchClientBuilder.builder();
         OAuth2Credential chatOAuth = new OAuth2Credential("twitch", System.getenv("BCUK_BOT_TWITCH_CHAT_OAUTH"));
         OAuth2Credential appOAuth = new OAuth2Credential("twitch", accessToken);
@@ -104,7 +97,6 @@ public class TwitchBot implements BotService
                 .withEnableHelix(true)
                 .withChatAccount(chatOAuth)
                 .withEnableChat(true)
-                .withScheduledThreadPoolExecutor(scheduledThreadPoolExecutor)
                 .withDefaultAuthToken(appOAuth)
                 .build();
         setupEvents();
@@ -115,29 +107,13 @@ public class TwitchBot implements BotService
     public void stop()
     {
         twitchClient.close();
-        scheduledThreadPoolExecutor.shutdown();
         twitchClient = null;
-        scheduledThreadPoolExecutor = null;
     }
 
     @Override
     public boolean isRunning()
     {
         return twitchClient != null;
-    }
-
-    private void setupThreads()
-    {
-        BasicThreadFactory threadFactory = new BasicThreadFactory.Builder()
-                .namingPattern("twitch_chat-%d")
-                .daemon(false)
-                .priority(Thread.NORM_PRIORITY)
-                .build();
-
-        int threads = TwitchChat.REQUIRED_THREAD_COUNT + TwitchClientHelper.REQUIRED_THREAD_COUNT + TwitchPubSub.REQUIRED_THREAD_COUNT;
-        scheduledThreadPoolExecutor = new ScheduledThreadPoolExecutor(threads);
-        scheduledThreadPoolExecutor.setThreadFactory(threadFactory);
-        scheduledThreadPoolExecutor.setRemoveOnCancelPolicy(true);
     }
 
     private void setupEvents()
