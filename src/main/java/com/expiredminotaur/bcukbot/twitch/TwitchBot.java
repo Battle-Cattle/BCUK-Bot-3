@@ -17,10 +17,13 @@ import com.github.philippheuer.credentialmanager.domain.OAuth2Credential;
 import com.github.philippheuer.events4j.simple.SimpleEventHandler;
 import com.github.twitch4j.TwitchClient;
 import com.github.twitch4j.TwitchClientBuilder;
+import com.github.twitch4j.TwitchClientHelper;
+import com.github.twitch4j.chat.TwitchChat;
 import com.github.twitch4j.chat.events.channel.ChannelMessageEvent;
 import com.github.twitch4j.common.events.user.PrivateMessageEvent;
 import com.github.twitch4j.helix.domain.ChannelInformation;
 import com.github.twitch4j.helix.domain.Stream;
+import com.github.twitch4j.pubsub.TwitchPubSub;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -131,10 +134,10 @@ public class TwitchBot implements BotService
                 .priority(Thread.NORM_PRIORITY)
                 .build();
 
-        scheduledThreadPoolExecutor = new ScheduledThreadPoolExecutor(Runtime.getRuntime().availableProcessors());
+        int threads = TwitchChat.REQUIRED_THREAD_COUNT + TwitchClientHelper.REQUIRED_THREAD_COUNT + TwitchPubSub.REQUIRED_THREAD_COUNT;
+        scheduledThreadPoolExecutor = new ScheduledThreadPoolExecutor(threads);
         scheduledThreadPoolExecutor.setThreadFactory(threadFactory);
         scheduledThreadPoolExecutor.setRemoveOnCancelPolicy(true);
-        scheduledThreadPoolExecutor.setMaximumPoolSize(Runtime.getRuntime().availableProcessors() * 8);
     }
 
     private void setupEvents()
