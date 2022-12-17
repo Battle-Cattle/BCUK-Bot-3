@@ -7,7 +7,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.RequestEntity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.oauth2.client.endpoint.DefaultAuthorizationCodeTokenResponseClient;
 import org.springframework.security.oauth2.client.endpoint.OAuth2AccessTokenResponseClient;
 import org.springframework.security.oauth2.client.endpoint.OAuth2AuthorizationCodeGrantRequest;
@@ -17,6 +16,7 @@ import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequestEntityConverter;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.security.web.SecurityFilterChain;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Objects;
@@ -26,7 +26,7 @@ import static com.expiredminotaur.bcukbot.web.security.OAuth2UserAgentUtils.with
 
 @EnableWebSecurity
 @Configuration
-public class SecurityConfiguration extends WebSecurityConfigurerAdapter
+public class SecurityConfiguration
 {
     private static final String LOGIN_URL = "/login";
     private static final String LOGIN_PROCESS_IRL = "/login/process";
@@ -42,8 +42,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter
                 r -> r.getIdentifier().equals(parameterValue));
     }
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception
+    @Bean
+    protected SecurityFilterChain configure(HttpSecurity http) throws Exception
     {
         http
                 .authorizeRequests().requestMatchers(SecurityConfiguration::isFrameworkInternalRequest).permitAll()
@@ -53,6 +53,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter
                 .tokenEndpoint().accessTokenResponseClient(accessTokenResponseClient())
                 .and().userInfoEndpoint().userService(userService())
                 .and().loginPage(LOGIN_URL).defaultSuccessUrl(LOGIN_PROCESS_IRL, true).permitAll();
+
+        return http.build();
     }
 
     @Bean
