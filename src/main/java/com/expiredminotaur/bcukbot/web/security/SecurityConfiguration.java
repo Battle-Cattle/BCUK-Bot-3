@@ -2,6 +2,7 @@ package com.expiredminotaur.bcukbot.web.security;
 
 import com.vaadin.flow.server.HandlerHelper;
 import com.vaadin.flow.shared.ApplicationConstants;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.RequestEntity;
@@ -18,7 +19,6 @@ import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.SecurityFilterChain;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.Objects;
 import java.util.stream.Stream;
 
