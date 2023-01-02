@@ -35,6 +35,7 @@ jobs:
     - name: Setup Java JDK
       uses: actions/setup-java@v3
       with:
+        distribution: 'adopt'
         java-version: 17
 
     # If this run was triggered by a pull request event, then checkout
