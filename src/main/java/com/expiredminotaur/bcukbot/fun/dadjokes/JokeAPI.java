@@ -15,9 +15,8 @@ public class JokeAPI
 
     private static String getJoke()
     {
-        try
+        try(BufferedReader br = HttpHandler.textRequest(new URL("https://icanhazdadjoke.com/")))
         {
-            BufferedReader br = HttpHandler.textRequest(new URL("https://icanhazdadjoke.com/"));
             StringBuilder output = new StringBuilder();
             String line;
             while ((line = br.readLine()) != null)

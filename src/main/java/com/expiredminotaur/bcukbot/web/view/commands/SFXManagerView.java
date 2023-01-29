@@ -75,10 +75,9 @@ public class SFXManagerView extends HorizontalLayout
 
         upload.addSucceededListener(event ->
         {
-            try
+            File targetFile = new File("sfx/" + event.getFileName());
+            try(OutputStream outStream = new FileOutputStream(targetFile))
             {
-                File targetFile = new File("sfx/" + event.getFileName());
-                OutputStream outStream = new FileOutputStream(targetFile);
                 InputStream initialStream = buffer.getInputStream();
                 byte[] byteBuffer = new byte[initialStream.available()];
                 if (initialStream.read(byteBuffer) > 0)

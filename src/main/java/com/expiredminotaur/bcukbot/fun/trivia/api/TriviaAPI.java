@@ -24,9 +24,8 @@ public class TriviaAPI
 
     public void getSessionToken()
     {
-        try
+        try(BufferedReader br = HttpHandler.textRequest(new URL("https://opentdb.com/api_token.php?command=request")))
         {
-            BufferedReader br = HttpHandler.textRequest(new URL("https://opentdb.com/api_token.php?command=request"));
             String output;
             if ((output = br.readLine()) != null)
             {
@@ -49,13 +48,15 @@ public class TriviaAPI
 
     public Questions.Question getQuestion() throws Exception
     {
-        BufferedReader br = HttpHandler.textRequest(new URL(String.format("https://opentdb.com/api.php?amount=1&token=%s", token)));
-        String output;
         Questions.Question question = null;
-        if ((output = br.readLine()) != null)
+        try(BufferedReader br = HttpHandler.textRequest(new URL(String.format("https://opentdb.com/api.php?amount=1&token=%s", token))))
         {
-            Questions questionsRequest = gson.fromJson(output, Questions.class);
-            question = processQuestionResponse(questionsRequest);
+            String output;
+            if ((output = br.readLine()) != null)
+            {
+                Questions questionsRequest = gson.fromJson(output, Questions.class);
+                question = processQuestionResponse(questionsRequest);
+            }
         }
         if (question == null) logger.error("Failed to get Trivia question, no response");
         return question;
@@ -89,19 +90,21 @@ public class TriviaAPI
 
     private void resetSessionToken() throws Exception
     {
-        BufferedReader br = HttpHandler.textRequest(new URL(String.format("https://opentdb.com/api_token.php?command=reset&token=%s", token)));
-        String output;
-        if ((output = br.readLine()) != null)
+        try (BufferedReader br = HttpHandler.textRequest(new URL(String.format("https://opentdb.com/api_token.php?command=reset&token=%s", token))))
         {
-            SessionToken tokenRequest = gson.fromJson(output, SessionToken.class);
-            if (tokenRequest.getResponseCode() == 0)
+            String output;
+            if ((output = br.readLine()) != null)
             {
-                token = tokenRequest.getToken();
-            } else
-            {
-                logger.error(String.format("Failed to reset Trivia API token, Error code %d", tokenRequest.getResponseCode()));
+                SessionToken tokenRequest = gson.fromJson(output, SessionToken.class);
+                if (tokenRequest.getResponseCode() == 0)
+                {
+                    token = tokenRequest.getToken();
+                } else
+                {
+                    logger.error(String.format("Failed to reset Trivia API token, Error code %d", tokenRequest.getResponseCode()));
+                }
+                return;
             }
-            return;
         }
         logger.error("Failed to reset Trivia API token, no response");
     }
