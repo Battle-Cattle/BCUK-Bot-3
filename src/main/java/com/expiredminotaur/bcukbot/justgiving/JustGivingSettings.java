@@ -1,30 +1,27 @@
 package com.expiredminotaur.bcukbot.justgiving;
 
 import javax.persistence.Transient;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 public class JustGivingSettings
 {
     @Transient
-    static String fileName = "justgiving.json";
-    Boolean autoCheckEnabled = false;
-    Set<String> channels;
-    String appId;
-    String campaignName;
-    double lastTotal;
-    double lastTarget;
-    String message;
-    String facebookWebhook;
-    long discordChannelId = -1L;
+    private static final String fileName = "justgiving.json";
+    private Boolean autoCheckEnabled = false;
+    private Set<String> channels;
+    private String appId;
+    private String campaignName;
+    private double lastTotal;
+    private double lastTarget;
+    private String message;
+    private String facebookWebhook;
+    private List<Long> discordChannelIds = new ArrayList<>();
 
     public static String getFileName()
     {
         return fileName;
-    }
-
-    public static void setFileName(String fileName)
-    {
-        JustGivingSettings.fileName = fileName;
     }
 
     public Boolean getAutoCheckEnabled()
@@ -97,14 +94,14 @@ public class JustGivingSettings
         this.message = message;
     }
 
-    public long getDiscordChannelId()
+    public List<Long> getDiscordChannelIds()
     {
-        return discordChannelId;
+        return discordChannelIds;
     }
 
-    public void setDiscordChannelId(long discordChannelId)
+    public void setDiscordChannelIds(List<Long> discordChannelIds)
     {
-        this.discordChannelId = discordChannelId;
+        this.discordChannelIds = discordChannelIds;
     }
 
     public String getFacebookWebhook()
