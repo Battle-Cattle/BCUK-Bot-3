@@ -12,7 +12,7 @@ spring:
           discord:
             client-id: ${BCUK_BOT_DISCORD_CLIENT_ID}
             client-secret: ${BCUK_BOT_DISCORD_CLIENT_SECRET}
-            clientAuthenticationMethod: post
+            clientAuthenticationMethod: none
             authorizationGrantType: authorization_code
             scope:
               - identify

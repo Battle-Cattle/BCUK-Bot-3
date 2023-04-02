@@ -3,11 +3,11 @@ package com.expiredminotaur.bcukbot.sql.collection.joke;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
 
-public interface JokeRepository extends PagingAndSortingRepository<Joke, Integer>
+public interface JokeRepository extends CrudRepository<Joke, Integer>
 {
     @Override
     @Cacheable(value = "Jokes")

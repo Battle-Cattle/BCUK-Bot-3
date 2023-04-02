@@ -1,6 +1,6 @@
 package com.expiredminotaur.bcukbot.justgiving;
 
-import javax.persistence.Transient;
+import jakarta.persistence.Transient;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;

@@ -3,11 +3,11 @@ package com.expiredminotaur.bcukbot.sql.collection.clip;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
 
-public interface ClipRepository extends PagingAndSortingRepository<Clip, Integer>
+public interface ClipRepository extends CrudRepository<Clip, Integer>
 {
     @Override
     @Cacheable(value = "Clips")
