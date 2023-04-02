@@ -21,6 +21,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.stream.Collectors;
+
 @Route(value = "justgiving", layout = MainLayout.class)
 @AccessLevel(Role.MANAGER)
 public class JustGivingView extends VerticalLayout
@@ -43,7 +45,7 @@ public class JustGivingView extends VerticalLayout
         TextField facebookWebhook = new TextField("Facebook Webhook");
         facebookWebhook.setWidthFull();
 
-        channels.setItems(users.findByIsTwitchBotEnabledIsTrue().stream().map(User::getTwitchName));
+        channels.setItems(users.findByIsTwitchBotEnabledIsTrue().stream().map(User::getTwitchName).collect(Collectors.toList()));
 
         binder.bind(enabled, "autoCheckEnabled");
         binder.bind(channels, "channels");
