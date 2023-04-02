@@ -38,7 +38,9 @@ public class HttpHandler
             byte[] input = inputJson.getBytes(StandardCharsets.UTF_8);
             os.write(input, 0, input.length);
         }
-        handleConnection(conn);
+        BufferedReader br = handleConnection(conn);
+        if (br != null)
+            br.close();
     }
 
     public static BufferedReader getRequest(URL url) throws Exception
@@ -77,7 +79,5 @@ public class HttpHandler
             default:
                 throw new RuntimeException("Failed : HTTP error code : " + conn.getResponseCode() + " From:" + conn.getURL());
         }
-
-
     }
 }

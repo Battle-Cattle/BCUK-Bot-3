@@ -51,7 +51,7 @@ public class JustGivingAPI
         this.musicHandler = musicHandler;
         this.liveStreamManager = liveStreamManager;
         JustGivingSettings settings;
-        try (FileReader fr = new FileReader(JustGivingSettings.fileName))
+        try (FileReader fr = new FileReader(JustGivingSettings.getFileName()))
         {
             settings = gson.fromJson(fr, JustGivingSettings.class);
         } catch (IOException e)
@@ -65,7 +65,7 @@ public class JustGivingAPI
 
     public void saveSettings()
     {
-        try (FileWriter fw = new FileWriter(JustGivingSettings.fileName))
+        try (FileWriter fw = new FileWriter(JustGivingSettings.getFileName()))
         {
             gson.toJson(settings, fw);
         } catch (IOException e)
@@ -77,10 +77,10 @@ public class JustGivingAPI
 
     private void updateScheduler()
     {
-        if (settings.autoCheckEnabled && task == null)
+        if (settings.getAutoCheckEnabled() && task == null)
         {
             task = scheduler.scheduleAtFixedRate(this::checkForNewData, 0, 1, TimeUnit.SECONDS);
-        } else if (!settings.autoCheckEnabled && task != null)
+        } else if (!settings.getAutoCheckEnabled() && task != null)
         {
             task.cancel(false);
             task = null;
@@ -91,7 +91,7 @@ public class JustGivingAPI
     {
         try
         {
-            URL url = new URL(String.format("https://api.justgiving.com/%s/v1/fundraising/pages/%s", settings.appId, settings.campaignName));
+            URL url = new URL(String.format("https://api.justgiving.com/%s/v1/fundraising/pages/%s", settings.getAppId(), settings.getCampaignName()));
             BufferedReader br = HttpHandler.getRequest(url);
             String output;
             if (br != null && (output = br.readLine()) != null)
@@ -121,19 +121,19 @@ public class JustGivingAPI
             JsonObject jsonObject = jsonTree.getAsJsonObject();
             double total = Double.parseDouble(jsonObject.get("grandTotalRaisedExcludingGiftAid").getAsString());
             double target = Double.parseDouble(jsonObject.get("fundraisingTarget").getAsString());
-            if (total > settings.lastTotal)
+            if (total > settings.getLastTotal())
             {
-                settings.lastTotal = total;
-                settings.lastTarget = target;
+                settings.setLastTotal(total);
+                settings.setLastTarget(target);
                 saveSettings();
                 updateTotalRaisedMessage();
                 sendMessageToAll();
                 sendMessageToDiscord();
                 sendMessageToFacebook();
                 musicHandler.loadAndPlayPriority("justgiving.mp3");
-            } else if (totalRaisedMessage == null || target != settings.lastTarget)
+            } else if (totalRaisedMessage == null || target != settings.getLastTarget())
             {
-                settings.lastTarget = target;
+                settings.setLastTarget(target);
                 saveSettings();
                 updateTotalRaisedMessage();
             }
@@ -142,18 +142,19 @@ public class JustGivingAPI
 
     private void sendMessageToAll()
     {
-        if (totalRaisedMessage != null && settings.channels != null)
+        if (totalRaisedMessage != null && settings.getChannels() != null)
         {
-            for (String channel : settings.channels)
+            for (String channel : settings.getChannels())
                 twitchBot.sendMessage(channel, totalRaisedMessage);
         }
     }
 
     private void sendMessageToDiscord()
     {
-        if (totalRaisedMessage != null && settings.discordChannelId != -1L)
+        if (totalRaisedMessage != null && settings.getDiscordChannelIds() != null)
         {
-            discordBot.sendMessage(settings.discordChannelId, totalRaisedMessage);
+            for (long channel : settings.getDiscordChannelIds())
+                discordBot.sendMessage(channel, totalRaisedMessage);
         }
     }
 
@@ -161,12 +162,12 @@ public class JustGivingAPI
     {
         try
         {
-            if (totalRaisedMessage != null && settings.facebookWebhook != null)
+            if (totalRaisedMessage != null && settings.getFacebookWebhook() != null)
             {
                 JsonObject json = new JsonObject();
                 json.addProperty("message", totalRaisedMessage);
-                json.addProperty("link", "https://www.justgiving.com/fundraising/" + settings.campaignName);
-                HttpHandler.postUTF8Request(new URL(settings.facebookWebhook), json.toString());
+                json.addProperty("link", "https://www.justgiving.com/fundraising/" + settings.getCampaignName());
+                HttpHandler.postUTF8Request(new URL(settings.getFacebookWebhook()), json.toString());
             }
         } catch (Exception e)
         {
@@ -193,7 +194,7 @@ public class JustGivingAPI
         String total = toCurrency(jsonObject.get("grandTotalRaisedExcludingGiftAid").getAsString());
         String target = toCurrency(jsonObject.get("fundraisingTarget").getAsString());
         String percentage = jsonObject.get("totalRaisedPercentageOfFundraisingTarget").getAsString() + "%";
-        String message = settings.message;
+        String message = settings.getMessage();
         message = message.replace("$total", total);
         message = message.replace("$target", target);
         message = message.replace("$percentage", percentage);

@@ -14,9 +14,8 @@ public class UuidApi
 
     public static NameWithUUID nameToUUID(String name)
     {
-        try
+        try(BufferedReader br = HttpHandler.webRequest(new URL("https://api.mojang.com/users/profiles/minecraft/" + name)))
         {
-            BufferedReader br = HttpHandler.webRequest(new URL("https://api.mojang.com/users/profiles/minecraft/" + name));
             String output = br.lines().collect(Collectors.joining());
             return gson.fromJson(output, NameWithUUID.class);
         } catch (Exception e)
@@ -27,9 +26,8 @@ public class UuidApi
 
     public static Profile getProfile(String UUID)
     {
-        try
+        try(BufferedReader br = HttpHandler.webRequest(new URL("https://sessionserver.mojang.com/session/minecraft/profile/" + UUID)))
         {
-            BufferedReader br = HttpHandler.webRequest(new URL("https://sessionserver.mojang.com/session/minecraft/profile/" + UUID));
             String output = br.lines().collect(Collectors.joining());
             return gson.fromJson(output, Profile.class);
         } catch (Exception e)
