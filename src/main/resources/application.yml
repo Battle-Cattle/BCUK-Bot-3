@@ -21,9 +21,9 @@ spring:
             clientName: BCUK BOT
         provider:
           discord:
-            authorizationUri: https://discordapp.com/api/oauth2/authorize
-            tokenUri: https://discordapp.com/api/oauth2/token
-            userInfoUri: https://discordapp.com/api/users/@me
+            authorizationUri: https://discord.com/api/oauth2/authorize
+            tokenUri: https://discord.com/api/oauth2/token
+            userInfoUri: https://discord.com/api/users/@me
             userNameAttribute: username
   datasource:
     driverClassName: com.mysql.cj.jdbc.Driver
