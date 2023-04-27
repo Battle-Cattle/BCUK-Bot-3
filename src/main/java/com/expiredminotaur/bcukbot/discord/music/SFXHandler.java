@@ -2,7 +2,8 @@ package com.expiredminotaur.bcukbot.discord.music;
 
 import com.expiredminotaur.bcukbot.json.Settings;
 import com.expiredminotaur.bcukbot.sql.sfx.SFX;
-import com.expiredminotaur.bcukbot.sql.sfx.SFXRepository;
+import com.expiredminotaur.bcukbot.sql.sfx.SFXTrigger;
+import com.expiredminotaur.bcukbot.sql.sfx.SFXTriggerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Component;
 import java.io.File;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 
 @Component
 public class SFXHandler
@@ -17,24 +19,28 @@ public class SFXHandler
     private static final Random rng = new Random();
     private static long lastSFX = -1L;
     @Autowired
-    private SFXRepository sfxRepository;
+    private SFXTriggerRepository sfxTriggerRepository;
     @Autowired
     @Lazy
     private MusicHandler musicHandler;
     @Autowired
     private Settings settings;
 
-    public void play(String trigger)
+    public void play(String cmd)
     {
         long time = System.currentTimeMillis();
         if (time - lastSFX > settings.getSfxDelay() * 1000L)
         {
-            List<SFX> sfxList = sfxRepository.findByTriggerCommandIgnoreCase(trigger);
-            if (sfxList.size() > 0)
+            SFXTrigger trigger = sfxTriggerRepository.findByTriggerCommandIgnoreCase(cmd);
+            if (trigger != null)
             {
-                SFX sound = pickSound(sfxList);
-                musicHandler.loadAndPlayPriority(getFilePath(sound));
-                lastSFX = time;
+                Set<SFX> sfxList = trigger.getSfxSet();
+                if (sfxList.size() > 0)
+                {
+                    SFX sound = pickSound(sfxList.stream().toList());
+                    musicHandler.loadAndPlayPriority(getFilePath(sound));
+                    lastSFX = time;
+                }
             }
         }
     }
@@ -43,10 +49,10 @@ public class SFXHandler
     {
         if (override)
         {
-            List<SFX> sfxList = sfxRepository.findByTriggerCommandIgnoreCase(trigger);
+            Set<SFX> sfxList = sfxTriggerRepository.findByTriggerCommandIgnoreCase(trigger).getSfxSet();
             if (sfxList.size() > 0)
             {
-                SFX sound = pickSound(sfxList);
+                SFX sound = pickSound(sfxList.stream().toList());
                 musicHandler.loadAndPlayPriority(getFilePath(sound));
             }
         } else

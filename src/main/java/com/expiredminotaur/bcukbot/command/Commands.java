@@ -3,9 +3,9 @@ package com.expiredminotaur.bcukbot.command;
 import com.expiredminotaur.bcukbot.fun.counters.CounterHandler;
 import com.expiredminotaur.bcukbot.sql.command.alias.Alias;
 import com.expiredminotaur.bcukbot.sql.command.alias.AliasRepository;
-import com.expiredminotaur.bcukbot.sql.sfx.SFX;
 import com.expiredminotaur.bcukbot.sql.sfx.SFXCategoryRepository;
-import com.expiredminotaur.bcukbot.sql.sfx.SFXRepository;
+import com.expiredminotaur.bcukbot.sql.sfx.SFXTrigger;
+import com.expiredminotaur.bcukbot.sql.sfx.SFXTriggerRepository;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import reactor.core.publisher.Mono;
@@ -22,7 +22,7 @@ public abstract class Commands<E extends CommandEvent<?>>
     protected final Map<String, Command<E>> commands = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
     protected AliasRepository aliasRepository;
     protected CounterHandler counterHandler;
-    protected SFXRepository sfxRepository;
+    protected SFXTriggerRepository sfxTriggerRepository;
     protected SFXCategoryRepository sfxCategoryRepository;
 
     public Mono<Void> processCommand(E event)
@@ -53,14 +53,14 @@ public abstract class Commands<E extends CommandEvent<?>>
     protected Mono<Void> sfxList(@NotNull E event)
     {
         String[] command = event.getFinalMessage().split(" ", 2);
-        Set<SFX> list = (command.length < 2)
-                ? sfxRepository.getSFXList()
-                : sfxCategoryRepository.getSFXCategoryByNameIgnoreCase(command[1]).getSfx();
+        Set<SFXTrigger> list = (command.length < 2)
+                ? sfxTriggerRepository.getSFXList()
+                : sfxCategoryRepository.getSFXCategoryByNameIgnoreCase(command[1]).getTriggers();
         if (list != null && list.size() > 0)
         {
             StringBuilder s = new StringBuilder();
             Set<String> triggers = new HashSet<>(); //Use a set here to remove duplicates
-            list.forEach(sfx -> triggers.add(sfx.getTriggerCommand()));
+            list.forEach(sfx -> triggers.add(sfx.getTrigger()));
             triggers.forEach(trigger -> s.append(trigger).append(", "));
             s.setLength(s.length() - 2);
             return event.respond(s.toString());
@@ -96,9 +96,9 @@ public abstract class Commands<E extends CommandEvent<?>>
     }
 
     @Autowired
-    public final void setSfxRepository(SFXRepository sfxRepository)
+    public final void setSfxRepository(SFXTriggerRepository sfxTriggerRepository)
     {
-        this.sfxRepository = sfxRepository;
+        this.sfxTriggerRepository = sfxTriggerRepository;
     }
 
     @Autowired

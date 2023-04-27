@@ -15,13 +15,20 @@ public class SFX
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     int id;
-    String triggerCommand;
     String file;
-    boolean hidden = true;
     int weight = 1;
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
-    @JoinColumn(name = "category_id", referencedColumnName = "id")
-    private SFXCategory category;
+    @JoinColumn(name = "trigger_id", referencedColumnName = "id")
+    private SFXTrigger trigger;
+
+    public SFX()
+    {
+    }
+
+    public SFX(SFXTrigger trigger)
+    {
+        this.trigger = trigger;
+    }
 
     public int getId()
     {
@@ -31,16 +38,6 @@ public class SFX
     public void setId(int id)
     {
         this.id = id;
-    }
-
-    public String getTriggerCommand()
-    {
-        return triggerCommand;
-    }
-
-    public void setTriggerCommand(String triggerCommand)
-    {
-        this.triggerCommand = triggerCommand;
     }
 
     public String getFile()
@@ -53,16 +50,6 @@ public class SFX
         this.file = file;
     }
 
-    public boolean isHidden()
-    {
-        return hidden;
-    }
-
-    public void setHidden(boolean hidden)
-    {
-        this.hidden = hidden;
-    }
-
     public int getWeight()
     {
         return weight;
@@ -73,13 +60,13 @@ public class SFX
         this.weight = weight;
     }
 
-    public SFXCategory getCategory()
+    public SFXTrigger getTrigger()
     {
-        return category;
+        return trigger;
     }
 
-    public void setCategory(SFXCategory category)
+    public void setTrigger(SFXTrigger trigger)
     {
-        this.category = category;
+        this.trigger = trigger;
     }
 }
