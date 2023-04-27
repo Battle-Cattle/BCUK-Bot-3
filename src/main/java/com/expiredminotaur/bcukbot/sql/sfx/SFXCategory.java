@@ -21,8 +21,7 @@ public class SFXCategory
             cascade = CascadeType.REMOVE,
             fetch = FetchType.EAGER
     )
-    private Set<SFX> sfxSet;
-
+    private Set<SFXTrigger> sfxTriggerSet;
     public SFXCategory()
     {
     }
@@ -52,9 +51,8 @@ public class SFXCategory
         this.name = name;
     }
 
-
-    public Set<SFX> getSfx()
+    public Set<SFXTrigger> getTriggers()
     {
-        return sfxSet;
+        return sfxTriggerSet;
     }
 }

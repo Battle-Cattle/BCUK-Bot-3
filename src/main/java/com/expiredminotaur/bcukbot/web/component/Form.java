@@ -1,6 +1,7 @@
 package com.expiredminotaur.bcukbot.web.component;
 
 import com.vaadin.flow.component.AbstractField;
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dialog.Dialog;
@@ -11,10 +12,15 @@ import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.data.converter.Converter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public abstract class Form<T>
 {
-    private final FormLayout layout = new FormLayout();
-    private final Binder<T> binder;
+    final FormLayout layout = new FormLayout();
+    final Binder<T> binder;
+
+    final List<Component> components = new ArrayList<>();
 
     public Form(Class<T> type)
     {
@@ -39,13 +45,21 @@ public abstract class Form<T>
         return component;
     }
 
+    protected <C extends Component> C addExtraComponent(C component)
+    {
+        components.add(component);
+        return component;
+    }
+
     public void open(T data)
     {
         binder.readBean(data);
         Dialog dialog = new Dialog();
         dialog.setWidth("60%");
         dialog.setCloseOnOutsideClick(false);
-        dialog.add(layout, createButtons(data, dialog));
+        dialog.add(layout);
+        dialog.add(components);
+        dialog.add(createButtons(data, dialog));
         dialog.open();
     }
 

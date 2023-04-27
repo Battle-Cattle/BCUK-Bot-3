@@ -9,14 +9,23 @@ import org.springframework.data.repository.CrudRepository;
 import java.util.List;
 import java.util.Set;
 
-public interface SFXRepository extends CrudRepository<SFX, Integer>
+public interface SFXTriggerRepository extends CrudRepository<SFXTrigger, Integer>
 {
     @Override
-    @Cacheable(value = "SFX")
-    @NotNull List<SFX> findAll();
+    @NotNull List<SFXTrigger> findAll();
 
-    @Cacheable(value = "SFX")
-    List<SFX> getByTriggerId(Long id);
+    @Query("from SFXTrigger where hidden=false and category is null")
+    @Cacheable(value = "SFX_TRIGGER_LIST")
+    @NotNull Set<SFXTrigger> getSFXList();
+
+    @Cacheable(value = "SFX_TRIGGER_NULL")
+    @NotNull List<SFXTrigger> findByCategoryIsNull();
+
+    @Cacheable(value = "SFX_TRIGGER")
+    SFXTrigger findByTriggerCommandIgnoreCase(String trigger);
+
+    @Cacheable(value = "SFX_TRIGGER")
+    @NotNull List<SFXTrigger> findByCategory(SFXCategory category);
 
     @Override
     @CacheEvict(value = {"SFX", "SFX_TRIGGER", "SFX_TRIGGER_LIST", "SFX_TRIGGER_NULL"}, allEntries = true)
@@ -24,10 +33,9 @@ public interface SFXRepository extends CrudRepository<SFX, Integer>
 
     @Override
     @CacheEvict(value = {"SFX", "SFX_TRIGGER", "SFX_TRIGGER_LIST", "SFX_TRIGGER_NULL"}, allEntries = true)
-    void delete(@NotNull SFX sfx);
+    void delete(@NotNull SFXTrigger sfxTrigger);
 
     @Override
     @CacheEvict(value = {"SFX", "SFX_TRIGGER", "SFX_TRIGGER_LIST", "SFX_TRIGGER_NULL"}, allEntries = true)
-    @NotNull <S extends SFX> S save(@NotNull S sfx);
-
+    @NotNull <S extends SFXTrigger> S save(@NotNull S sfxTrigger);
 }
