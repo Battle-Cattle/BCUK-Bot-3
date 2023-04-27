@@ -208,8 +208,6 @@ public class SFXManagerView extends HorizontalLayout
         {
             super(SFXTrigger.class);
 
-            SfxForm sfxFrom = new SfxForm();
-
             addField("Trigger Command", new TextField(), "trigger");
             addField("Description", new TextField(), "description").setWidthFull();
             addField("Hidden", new Checkbox(), "hidden");
@@ -217,6 +215,7 @@ public class SFXManagerView extends HorizontalLayout
             category.setItemLabelGenerator(SFXCategory::getName);
             category.setClearButtonVisible(true);
             sfxGrid.setColumns("file", "weight");
+            SfxForm sfxFrom = new SfxForm();
             sfxGrid.addColumn(new ComponentRenderer<>(sfx -> new Button("Edit", e -> sfxFrom.open(sfx))))
                     .setHeader("Edit")
                     .setAutoWidth(true)

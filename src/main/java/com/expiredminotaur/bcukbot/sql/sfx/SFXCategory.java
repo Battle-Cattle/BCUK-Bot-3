@@ -22,6 +22,7 @@ public class SFXCategory
             fetch = FetchType.EAGER
     )
     private Set<SFXTrigger> sfxTriggerSet;
+
     public SFXCategory()
     {
     }
