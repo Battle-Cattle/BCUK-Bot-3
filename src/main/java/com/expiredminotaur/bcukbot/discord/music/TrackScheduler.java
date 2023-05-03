@@ -42,8 +42,6 @@ public class TrackScheduler extends AudioEventAdapter
     private AudioPlayer player;
     private LinkedBlockingDeque<AudioTrack> queue;
 
-    private boolean resume = false;
-
     void setup(final AudioPlayer player)
     {
         this.player = player;
@@ -62,12 +60,14 @@ public class TrackScheduler extends AudioEventAdapter
     void playPriority(AudioTrack track)
     {
         player.setPaused(true);
-        if (player.getPlayingTrack() != null && !player.getPlayingTrack().getUserData(TrackData.class).isSfx())
+        AudioTrack currentTrack = player.getPlayingTrack();
+        TrackData currentTrackData = currentTrack.getUserData(TrackData.class);
+        if (player.getPlayingTrack() != null && !currentTrackData.isSfx())
         {
-            AudioTrack clone = player.getPlayingTrack().makeClone();
-            clone.setPosition(player.getPlayingTrack().getPosition());
+            currentTrackData.setResume(true);
+            AudioTrack clone = currentTrack.makeClone();
+            clone.setPosition(currentTrack.getPosition());
             queue.offerFirst(clone);
-            resume = true;
         }
         queue.offerFirst(track);
         player.setVolume(settings.getSfxVolume());
@@ -136,11 +136,12 @@ public class TrackScheduler extends AudioEventAdapter
     @Override
     public void onTrackStart(AudioPlayer player, AudioTrack track)
     {
-        if (!track.getUserData(TrackData.class).isSfx() && !resume)
+        TrackData trackData = track.getUserData(TrackData.class);
+        if (!trackData.isSfx() && !trackData.isResume())
         {
             sendPlayingMessage(track);
         }
-        resume = false;
+        trackData.setResume(false);
     }
 
     @Override

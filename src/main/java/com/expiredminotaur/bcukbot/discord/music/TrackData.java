@@ -5,6 +5,8 @@ public class TrackData
     private String requestedBy = null;
     private boolean sfx = false;
 
+    private boolean resume = false;
+
     public String getRequestedBy()
     {
         return requestedBy;
@@ -23,5 +25,13 @@ public class TrackData
     public void setSfx(boolean sfx)
     {
         this.sfx = sfx;
+    }
+
+    public boolean isResume() {
+        return resume;
+    }
+
+    public void setResume(boolean resume) {
+        this.resume = resume;
     }
 }
