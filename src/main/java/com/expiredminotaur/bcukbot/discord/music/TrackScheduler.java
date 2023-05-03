@@ -61,13 +61,16 @@ public class TrackScheduler extends AudioEventAdapter
     {
         player.setPaused(true);
         AudioTrack currentTrack = player.getPlayingTrack();
-        TrackData currentTrackData = currentTrack.getUserData(TrackData.class);
-        if (player.getPlayingTrack() != null && !currentTrackData.isSfx())
+        if (currentTrack != null)
         {
-            currentTrackData.setResume(true);
-            AudioTrack clone = currentTrack.makeClone();
-            clone.setPosition(currentTrack.getPosition());
-            queue.offerFirst(clone);
+            TrackData currentTrackData = currentTrack.getUserData(TrackData.class);
+            if (!currentTrackData.isSfx())
+            {
+                currentTrackData.setResume(true);
+                AudioTrack clone = currentTrack.makeClone();
+                clone.setPosition(currentTrack.getPosition());
+                queue.offerFirst(clone);
+            }
         }
         queue.offerFirst(track);
         player.setVolume(settings.getSfxVolume());
