@@ -101,37 +101,46 @@ public class TrackScheduler extends AudioEventAdapter
         return queue;
     }
 
+    private void sendMessageToDiscord(String songName, String message)
+    {
+        discordBot.getGateway().updatePresence(ClientPresence.online(ClientActivity.listening(songName))).subscribe();
+        long channelId = settings.getSongAnnouncementChannel();
+        if (channelId >= 0)
+            discordBot.sendMessage(channelId, message);
+    }
+
+    private void sendMessageToTwitch(String message)
+    {
+        for (User user : userRepository.findByIsTwitchBotEnabledIsTrue())
+        {
+            if (liveStreamManager.checkLive(user.getTwitchName()))
+            {
+                twitchBot.sendMessage(user.getTwitchName(), message);
+            }
+        }
+    }
+
+    private void sendPlayingMessage(AudioTrack track)
+    {
+        TrackData trackData = track.getUserData(TrackData.class);
+        String title = track.getInfo().title;
+        String playing = "Playing: " + title;
+        if (trackData.getRequestedBy() != null)
+        {
+            playing += " Requested by: " + track.getUserData(TrackData.class).getRequestedBy();
+        }
+        sendMessageToDiscord(title, playing);
+        sendMessageToTwitch(playing);
+    }
+
     @Override
     public void onTrackStart(AudioPlayer player, AudioTrack track)
     {
-        if (!track.getUserData(TrackData.class).isSfx())
+        if (!track.getUserData(TrackData.class).isSfx() && !resume)
         {
-            if (!resume)
-            {
-                discordBot.getGateway().updatePresence(ClientPresence.online(ClientActivity.listening(currentTrack().getInfo().title))).subscribe();
-
-                String playing = "Playing: " + track.getInfo().title;
-                if (track.getUserData(TrackData.class).getRequestedBy() != null)
-                {
-                    playing += " Requested by: " + track.getUserData(TrackData.class).getRequestedBy();
-                }
-
-                long channelId = settings.getSongAnnouncementChannel();
-                if (channelId >= 0)
-                    discordBot.sendMessage(channelId, playing);
-
-                for (User user : userRepository.findByIsTwitchBotEnabledIsTrue())
-                {
-                    if (liveStreamManager.checkLive(user.getTwitchName()))
-                    {
-                        twitchBot.sendMessage(user.getTwitchName(), playing);
-                    }
-                }
-            } else
-            {
-                resume = false;
-            }
+            sendPlayingMessage(track);
         }
+        resume = false;
     }
 
     @Override
