@@ -3,7 +3,9 @@ package com.expiredminotaur.bcukbot.discord.music;
 public class TrackData
 {
     private String requestedBy = null;
-    private Boolean sfx = false;
+    private boolean sfx = false;
+
+    private boolean resume = false;
 
     public String getRequestedBy()
     {
@@ -15,13 +17,21 @@ public class TrackData
         this.requestedBy = requestedBy;
     }
 
-    public Boolean isSfx()
+    public boolean isSfx()
     {
         return sfx;
     }
 
-    public void setSfx(Boolean sfx)
+    public void setSfx(boolean sfx)
     {
         this.sfx = sfx;
+    }
+
+    public boolean isResume() {
+        return resume;
+    }
+
+    public void setResume(boolean resume) {
+        this.resume = resume;
     }
 }

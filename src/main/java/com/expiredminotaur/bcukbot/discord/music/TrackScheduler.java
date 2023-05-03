@@ -42,8 +42,6 @@ public class TrackScheduler extends AudioEventAdapter
     private AudioPlayer player;
     private LinkedBlockingDeque<AudioTrack> queue;
 
-    private boolean resume = false;
-
     void setup(final AudioPlayer player)
     {
         this.player = player;
@@ -62,12 +60,17 @@ public class TrackScheduler extends AudioEventAdapter
     void playPriority(AudioTrack track)
     {
         player.setPaused(true);
-        if (player.getPlayingTrack() != null && !player.getPlayingTrack().getUserData(TrackData.class).isSfx())
+        AudioTrack currentTrack = player.getPlayingTrack();
+        if (currentTrack != null)
         {
-            AudioTrack clone = player.getPlayingTrack().makeClone();
-            clone.setPosition(player.getPlayingTrack().getPosition());
-            queue.offerFirst(clone);
-            resume = true;
+            TrackData currentTrackData = currentTrack.getUserData(TrackData.class);
+            if (!currentTrackData.isSfx())
+            {
+                currentTrackData.setResume(true);
+                AudioTrack clone = currentTrack.makeClone();
+                clone.setPosition(currentTrack.getPosition());
+                queue.offerFirst(clone);
+            }
         }
         queue.offerFirst(track);
         player.setVolume(settings.getSfxVolume());
@@ -101,37 +104,47 @@ public class TrackScheduler extends AudioEventAdapter
         return queue;
     }
 
+    private void sendMessageToDiscord(String songName, String message)
+    {
+        discordBot.getGateway().updatePresence(ClientPresence.online(ClientActivity.listening(songName))).subscribe();
+        long channelId = settings.getSongAnnouncementChannel();
+        if (channelId >= 0)
+            discordBot.sendMessage(channelId, message);
+    }
+
+    private void sendMessageToTwitch(String message)
+    {
+        for (User user : userRepository.findByIsTwitchBotEnabledIsTrue())
+        {
+            if (liveStreamManager.checkLive(user.getTwitchName()))
+            {
+                twitchBot.sendMessage(user.getTwitchName(), message);
+            }
+        }
+    }
+
+    private void sendPlayingMessage(AudioTrack track)
+    {
+        TrackData trackData = track.getUserData(TrackData.class);
+        String title = track.getInfo().title;
+        String playing = "Playing: " + title;
+        if (trackData.getRequestedBy() != null)
+        {
+            playing += " Requested by: " + track.getUserData(TrackData.class).getRequestedBy();
+        }
+        sendMessageToDiscord(title, playing);
+        sendMessageToTwitch(playing);
+    }
+
     @Override
     public void onTrackStart(AudioPlayer player, AudioTrack track)
     {
-        if (!track.getUserData(TrackData.class).isSfx())
+        TrackData trackData = track.getUserData(TrackData.class);
+        if (!trackData.isSfx() && !trackData.isResume())
         {
-            if (!resume)
-            {
-                discordBot.getGateway().updatePresence(ClientPresence.online(ClientActivity.listening(currentTrack().getInfo().title))).subscribe();
-
-                String playing = "Playing: " + track.getInfo().title;
-                if (track.getUserData(TrackData.class).getRequestedBy() != null)
-                {
-                    playing += " Requested by: " + track.getUserData(TrackData.class).getRequestedBy();
-                }
-
-                long channelId = settings.getSongAnnouncementChannel();
-                if (channelId >= 0)
-                    discordBot.sendMessage(channelId, playing);
-
-                for (User user : userRepository.findByIsTwitchBotEnabledIsTrue())
-                {
-                    if (liveStreamManager.checkLive(user.getTwitchName()))
-                    {
-                        twitchBot.sendMessage(user.getTwitchName(), playing);
-                    }
-                }
-            } else
-            {
-                resume = false;
-            }
+            sendPlayingMessage(track);
         }
+        trackData.setResume(false);
     }
 
     @Override
