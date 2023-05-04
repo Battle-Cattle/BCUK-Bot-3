@@ -1,7 +1,12 @@
 package com.expiredminotaur.bcukbot.web.view.commands;
 
 import com.expiredminotaur.bcukbot.Role;
-import com.expiredminotaur.bcukbot.sql.sfx.*;
+import com.expiredminotaur.bcukbot.sql.sfx.SFX;
+import com.expiredminotaur.bcukbot.sql.sfx.SFXCategory;
+import com.expiredminotaur.bcukbot.sql.sfx.SFXCategoryRepository;
+import com.expiredminotaur.bcukbot.sql.sfx.SFXRepository;
+import com.expiredminotaur.bcukbot.sql.sfx.SFXTrigger;
+import com.expiredminotaur.bcukbot.sql.sfx.SFXTriggerRepository;
 import com.expiredminotaur.bcukbot.web.component.AudioPlayer;
 import com.expiredminotaur.bcukbot.web.component.Form;
 import com.expiredminotaur.bcukbot.web.layout.MainLayout;
@@ -27,7 +32,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
