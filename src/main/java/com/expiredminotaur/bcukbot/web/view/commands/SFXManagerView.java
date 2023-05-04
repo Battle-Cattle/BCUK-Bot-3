@@ -7,6 +7,7 @@ import com.expiredminotaur.bcukbot.sql.sfx.SFXCategoryRepository;
 import com.expiredminotaur.bcukbot.sql.sfx.SFXRepository;
 import com.expiredminotaur.bcukbot.sql.sfx.SFXTrigger;
 import com.expiredminotaur.bcukbot.sql.sfx.SFXTriggerRepository;
+import com.expiredminotaur.bcukbot.web.component.AudioPlayer;
 import com.expiredminotaur.bcukbot.web.component.Form;
 import com.expiredminotaur.bcukbot.web.layout.MainLayout;
 import com.expiredminotaur.bcukbot.web.security.AccessLevel;
@@ -53,7 +54,7 @@ public class SFXManagerView extends HorizontalLayout
     private final SfxTriggerForm sfxTriggerForm = new SfxTriggerForm();
     private final SFXTriggerRepository sfxCommands;
     private final SFXCategoryRepository sfxCategories;
-    private  final SFXRepository sfxRepository;
+    private final SFXRepository sfxRepository;
 
     public SFXManagerView(@Autowired SFXTriggerRepository sfxCommands, @Autowired SFXCategoryRepository sfxCategories, @Autowired SFXRepository sfxRepository)
     {
@@ -104,8 +105,12 @@ public class SFXManagerView extends HorizontalLayout
             }
         });
 
-        Grid.Column<String> column = fileList.addColumn(s -> s);
-        column.setHeader("Files");
+        fileList.addColumn(s -> s)
+                .setHeader("Files");
+        fileList.addColumn(new ComponentRenderer<>(file ->
+                        new AudioPlayer(folder.getAbsolutePath() + File.separator + file)))
+                .setFlexGrow(0);
+        fileList.getColumns().forEach(c -> c.setAutoWidth(true));
         fileList.setItems(folder.list());
 
         VerticalLayout fileManagerLayout = new VerticalLayout();
@@ -182,13 +187,17 @@ public class SFXManagerView extends HorizontalLayout
         return category.getName();
     }
 
-    private static class SFXDetailsLayout extends VerticalLayout
+    private class SFXDetailsLayout extends VerticalLayout
     {
         private final Grid<SFX> sfxGrid = new Grid<>(SFX.class);
 
         public SFXDetailsLayout()
         {
             sfxGrid.setColumns("file", "weight");
+            sfxGrid.addColumn(new ComponentRenderer<>(sfx ->
+                new AudioPlayer(folder.getAbsolutePath() + File.separator + sfx.getFile())))
+                .setFlexGrow(0);
+            sfxGrid.getColumns().forEach(col-> col.setAutoWidth(true));
             add(sfxGrid);
         }
 
@@ -216,10 +225,14 @@ public class SFXManagerView extends HorizontalLayout
             category.setClearButtonVisible(true);
             sfxGrid.setColumns("file", "weight");
             SfxForm sfxFrom = new SfxForm();
+            sfxGrid.addColumn(new ComponentRenderer<>(sfx ->
+                new AudioPlayer(folder.getAbsolutePath() + File.separator + sfx.getFile())))
+                .setFlexGrow(0);
             sfxGrid.addColumn(new ComponentRenderer<>(sfx -> new Button("Edit", e -> sfxFrom.open(sfx))))
                     .setHeader("Edit")
                     .setAutoWidth(true)
                     .setFlexGrow(0);
+            sfxGrid.getColumns().forEach(col -> col.setAutoWidth(true));
             Grid.Column<SFX> fileCol = sfxGrid.getColumnByKey("file");
             sfxGrid.sort(Collections.singletonList(new GridSortOrder<>(fileCol, SortDirection.ASCENDING)));
             addExtraComponent(new Button("Add SFX", e -> sfxFrom.open(new SFX(trigger))));
