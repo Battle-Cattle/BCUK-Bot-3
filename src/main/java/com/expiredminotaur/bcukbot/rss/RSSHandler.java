@@ -1,5 +1,7 @@
 package com.expiredminotaur.bcukbot.rss;
 
+import com.expiredminotaur.bcukbot.sql.rss.RSSFeed;
+import com.expiredminotaur.bcukbot.sql.rss.RSSFeedRepository;
 import com.rometools.rome.feed.synd.SyndContent;
 import com.rometools.rome.feed.synd.SyndEntry;
 import com.rometools.rome.feed.synd.SyndFeed;
@@ -10,6 +12,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -21,23 +24,28 @@ import java.util.List;
 public class RSSHandler
 {
     private final Logger log = LoggerFactory.getLogger(RSSHandler.class);
-    private final String url = "https://www.warhammer-community.com/feed/";
 
-    @Scheduled(cron = "* */5 * * * *")//every 5th minute
+    @Autowired
+    private RSSFeedRepository rssFeedRepository;
+
+    @Scheduled(cron = "0 */5 * * * *")//every 5th minute
     private void checkForUpdates()
     {
-        try
+        for (RSSFeed rssFeed: rssFeedRepository.findAll())
         {
-            URL feedSource = new URL(url);
-            SyndFeedInput input = new SyndFeedInput();
-            SyndFeed feed = input.build(new XmlReader(feedSource));
-            List<SyndEntry> newsList = feed.getEntries();
-            for (SyndEntry news : newsList)
-                postNews(news);
+            try
+            {
+                URL feedSource = new URL(rssFeed.getUrl());
+                SyndFeedInput input = new SyndFeedInput();
+                SyndFeed feed = input.build(new XmlReader(feedSource.openConnection().getInputStream()));
+                List<SyndEntry> newsList = feed.getEntries();
+                for (SyndEntry news : newsList)
+                    postNews(news);
 
-        } catch (FeedException | IOException e)
-        {
-            log.error("RSS error", e);
+            } catch (FeedException | IOException e)
+            {
+                log.error("RSS error", e);
+            }
         }
     }
 
