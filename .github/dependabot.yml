@@ -9,6 +9,8 @@ updates:
     directory: "/" # Location of package manifests
     schedule:
       interval: "daily"
+    assignees:
+      - "ExpiredMinotaur"
     ignore:
       - dependency-name: "vaadin*"
       #ignore version of vaddin that are not LTS
