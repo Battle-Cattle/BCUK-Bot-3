@@ -10,7 +10,7 @@ import com.expiredminotaur.bcukbot.web.security.AccessLevel;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.combobox.MultiSelectComboBox;
-import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.html.NativeLabel;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
@@ -39,6 +39,7 @@ public class JustGivingView extends VerticalLayout
         discordChannel.setWidthFull();
         TextField appId = new TextField("App ID");
         TextField campaignName = new TextField("Campaign Name");
+        TextField campaignLink = new TextField("Campaign Link");
         campaignName.setWidthFull();
         TextField message = new TextField("Message");
         message.setWidthFull();
@@ -54,6 +55,7 @@ public class JustGivingView extends VerticalLayout
                 .bind("discordChannelIds");
         binder.bind(appId, "appId");
         binder.bind(campaignName, "campaignName");
+        binder.bind(campaignLink, "campaignLink");
         binder.bind(message, "message");
         binder.bind(facebookWebhook, "facebookWebhook");
 
@@ -69,14 +71,14 @@ public class JustGivingView extends VerticalLayout
             }
         });
 
-        Label test = new Label("Clear total raised to force twitch message and sfx");
+        NativeLabel test = new NativeLabel("Clear total raised to force twitch message and sfx");
         Button testButton = new Button("Test", e ->
         {
             justGivingAPI.getSettings().setLastTotal(0);
             justGivingAPI.saveSettings();
         });
 
-        add(enabled, channels, discordChannel, appId, campaignName, message, facebookWebhook, save, test, testButton);
+        add(enabled, channels, discordChannel, appId, campaignName, campaignLink, message, facebookWebhook, save, test, testButton);
         binder.readBean(justGivingAPI.getSettings());
     }
 }

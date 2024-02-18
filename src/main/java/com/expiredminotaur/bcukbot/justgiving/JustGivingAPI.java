@@ -166,7 +166,7 @@ public class JustGivingAPI
             {
                 JsonObject json = new JsonObject();
                 json.addProperty("message", totalRaisedMessage);
-                json.addProperty("link", "https://www.justgiving.com/fundraising/" + settings.getCampaignName());
+                json.addProperty("link", settings.getCampaignLink());
                 HttpHandler.postUTF8Request(new URL(settings.getFacebookWebhook()), json.toString());
             }
         } catch (Exception e)
