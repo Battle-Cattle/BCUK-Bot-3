@@ -25,6 +25,7 @@ import discord4j.core.spec.VoiceChannelJoinSpec;
 import discord4j.voice.VoiceConnection;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
@@ -41,6 +42,7 @@ public class MusicHandler
     private final discord4j.voice.AudioProvider provider;
     private VoiceConnection voiceConnection;
 
+    @Lazy
     public MusicHandler(@Autowired Settings settings, @Autowired TrackScheduler scheduler)
     {
         this.scheduler = scheduler;
