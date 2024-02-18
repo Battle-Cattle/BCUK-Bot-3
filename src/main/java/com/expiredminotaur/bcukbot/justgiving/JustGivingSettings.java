@@ -1,6 +1,7 @@
 package com.expiredminotaur.bcukbot.justgiving;
 
 import jakarta.persistence.Transient;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -13,6 +14,7 @@ public class JustGivingSettings
     private Set<String> channels;
     private String appId;
     private String campaignName;
+    private String campaignLink;
     private double lastTotal;
     private double lastTarget;
     private String message;
@@ -62,6 +64,16 @@ public class JustGivingSettings
     public void setCampaignName(String campaignName)
     {
         this.campaignName = campaignName;
+    }
+
+    public String getCampaignLink()
+    {
+        return campaignLink;
+    }
+
+    public void setCampaignLink(String campaignLink)
+    {
+        this.campaignLink = campaignLink;
     }
 
     public double getLastTotal()
