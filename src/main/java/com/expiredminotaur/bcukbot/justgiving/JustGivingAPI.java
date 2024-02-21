@@ -44,12 +44,16 @@ public class JustGivingAPI
     private String totalRaisedMessage = null;
     private ScheduledFuture<?> task = null;
 
-    public JustGivingAPI(@Lazy @Autowired TwitchBot twitchBot, @Lazy @Autowired DiscordBot discordBot, @Lazy @Autowired MusicHandler musicHandler, @Lazy @Autowired LiveStreamManager liveStreamManager)
+    @Autowired
+    private JustGivingEventHandler eventHandler;
+
+    public JustGivingAPI(@Lazy @Autowired TwitchBot twitchBot, @Lazy @Autowired DiscordBot discordBot, @Lazy @Autowired MusicHandler musicHandler, @Lazy @Autowired LiveStreamManager liveStreamManager, @Autowired JustGivingEventHandler eventHandler)
     {
         this.twitchBot = twitchBot;
         this.discordBot = discordBot;
         this.musicHandler = musicHandler;
         this.liveStreamManager = liveStreamManager;
+        this.eventHandler = eventHandler;
         JustGivingSettings settings;
         try (FileReader fr = new FileReader(JustGivingSettings.getFileName()))
         {
@@ -61,6 +65,7 @@ public class JustGivingAPI
         }
         this.settings = settings;
         saveSettings();
+        eventHandler.update(settings.getLastTotal(), settings.getLastTarget());
     }
 
     public void saveSettings()
@@ -131,11 +136,13 @@ public class JustGivingAPI
                 sendMessageToDiscord();
                 sendMessageToFacebook();
                 musicHandler.loadAndPlayPriority("justgiving.mp3");
+                eventHandler.update(total, target);
             } else if (totalRaisedMessage == null || target != settings.getLastTarget())
             {
                 settings.setLastTarget(target);
                 saveSettings();
                 updateTotalRaisedMessage();
+                eventHandler.update(total, target);
             }
         }
     }
