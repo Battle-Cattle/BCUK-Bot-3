@@ -53,11 +53,13 @@ public class JGProgress extends VerticalLayout
         progressBarText.getStyle()
                 .setColor("rgb(255, 255, 255)")
                 .setFontSize("24px")
-                .setLineHeight("50px")
                 .setTextAlign(Style.TextAlign.CENTER)
-                .setPosition(Style.Position.ABSOLUTE);
+                .setPosition(Style.Position.ABSOLUTE)
+                .setTop("0")
+                .setLeft("0")
+                .setLineHeight("96px");
         progressBarText.setWidthFull();
-        progressBarText.setHeight("50px");
+        //progressBarText.setHeight("70px");
     }
 
     private void setupProgressBar()
