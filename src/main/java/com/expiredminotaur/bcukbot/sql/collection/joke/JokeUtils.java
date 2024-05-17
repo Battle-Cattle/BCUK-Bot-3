@@ -16,7 +16,7 @@ public class JokeUtils extends CollectionUtil
     @Override
     public String add(String newEntry, String source)
     {
-        if (newEntry.trim().length() > 0)
+        if (!newEntry.trim().isEmpty())
         {
             Joke joke = new Joke(newEntry, source);
             joke = jokes.save(joke);

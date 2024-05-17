@@ -19,7 +19,7 @@ public class CounterHandler
     {
         String message = event.getFinalMessage().split(" ", 2)[0];
         List<Counter> triggers = counterRepository.findByTrigger(message.toLowerCase());
-        if (triggers.size() > 0)
+        if (!triggers.isEmpty())
         {
             Counter counter = triggers.get(0);
             counter.incrementCurrentValue();
@@ -28,7 +28,7 @@ public class CounterHandler
                     + String.format(counter.getMessage(), counter.getCurrentValue()));
         }
         triggers = counterRepository.findByCheck(message.toLowerCase());
-        if (triggers.size() > 0)
+        if (!triggers.isEmpty())
         {
             Counter counter = triggers.get(0);
             return event.respond(String.format(counter.getMessage(), counter.getCurrentValue()));

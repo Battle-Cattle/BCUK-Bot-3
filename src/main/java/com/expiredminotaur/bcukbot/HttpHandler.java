@@ -69,15 +69,12 @@ public class HttpHandler
 
     private static BufferedReader handleConnection(HttpURLConnection conn) throws Exception
     {
-        switch (conn.getResponseCode())
+        return switch (conn.getResponseCode())
         {
-            case 200:
-                return new BufferedReader(new InputStreamReader((conn.getInputStream())));
-            case 304:
-                //no change
-                return null;
-            default:
-                throw new RuntimeException("Failed : HTTP error code : " + conn.getResponseCode() + " From:" + conn.getURL());
-        }
+            case 200 -> new BufferedReader(new InputStreamReader((conn.getInputStream())));
+            case 304 -> null; //no change
+            default ->
+                    throw new RuntimeException("Failed : HTTP error code : " + conn.getResponseCode() + " From:" + conn.getURL());
+        };
     }
 }

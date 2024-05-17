@@ -16,7 +16,7 @@ public class ClipUtils extends CollectionUtil
     @Override
     public String add(String newEntry, String source)
     {
-        if (newEntry.trim().length() > 0)
+        if (!newEntry.trim().isEmpty())
         {
             Clip clip = new Clip(newEntry, source);
             clip = clips.save(clip);

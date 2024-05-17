@@ -37,7 +37,7 @@ public class UserTools
             return Long.parseLong(id);
         } catch (NumberFormatException e)
         {
-            logger.warn("Failed to parse user ID: " + id);
+            logger.warn("Failed to parse user ID: {}", id);
             return -1;
         }
     }

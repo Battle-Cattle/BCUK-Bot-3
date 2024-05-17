@@ -28,7 +28,7 @@ public class MinecraftCommands
             if (splitMessage.length < 2)
                 return event.respond("Username not given");
             event.getEvent().getMember().ifPresent(member -> message.set(addMinecraftWhitelist(member.getId().asLong(), splitMessage[1])));
-            if (!message.get().equals(""))
+            if (!message.get().isEmpty())
                 return event.respond(message.get());
         }
         return event.empty();

@@ -42,7 +42,7 @@ public class LiveStreamManager
         {
             Map<String, StreamData> groupData = streams.computeIfAbsent(group.getName(), k -> new HashMap<>());
             Set<Streamer> streamers = group.getStreamers();
-            if (streamers.size() > 0)
+            if (!streamers.isEmpty())
             {
                 List<String> streamerNames = streamers.stream().map(Streamer::getName).collect(Collectors.toList());
                 List<Stream> streams = twitchBot.getStreams(streamerNames);

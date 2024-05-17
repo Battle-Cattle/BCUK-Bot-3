@@ -16,7 +16,7 @@ public class QuoteUtils extends CollectionUtil
     @Override
     public String add(String newEntry, String source)
     {
-        if (newEntry.trim().length() > 0)
+        if (!newEntry.trim().isEmpty())
         {
             Quote quote = new Quote(newEntry, source);
             quote = quotes.save(quote);

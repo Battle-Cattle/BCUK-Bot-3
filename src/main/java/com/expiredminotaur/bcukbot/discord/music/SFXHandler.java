@@ -35,7 +35,7 @@ public class SFXHandler
             if (trigger != null)
             {
                 Set<SFX> sfxList = trigger.getSfxSet();
-                if (sfxList.size() > 0)
+                if (!sfxList.isEmpty())
                 {
                     SFX sound = pickSound(sfxList.stream().toList());
                     musicHandler.loadAndPlayPriority(getFilePath(sound));
@@ -50,7 +50,7 @@ public class SFXHandler
         if (override)
         {
             Set<SFX> sfxList = sfxTriggerRepository.findByTriggerCommandIgnoreCase(trigger).getSfxSet();
-            if (sfxList.size() > 0)
+            if (!sfxList.isEmpty())
             {
                 SFX sound = pickSound(sfxList.stream().toList());
                 musicHandler.loadAndPlayPriority(getFilePath(sound));

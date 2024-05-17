@@ -63,6 +63,6 @@ public class ProcessLoginView extends Div implements AfterNavigationObserver
         List<Guild> servers = discordBot.getGateway().getGuilds()
                 .filterWhen(guild -> guild.getMembers().any(member -> member.getId().equals(Snowflake.of(userId))))
                 .collectList().block();
-        return servers != null && servers.size() > 0;
+        return servers != null && !servers.isEmpty();
     }
 }

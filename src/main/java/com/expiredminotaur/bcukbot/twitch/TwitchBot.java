@@ -31,6 +31,7 @@ import org.springframework.stereotype.Component;
 
 import java.net.URL;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
 
@@ -66,8 +67,8 @@ public class TwitchBot implements BotService
     private static String getAccessToken() throws Exception
     {
         String url = "https://id.twitch.tv/oauth2/token?" +
-                "client_id=" + URLEncoder.encode(System.getenv("BCUK_BOT_TWITCH_CLIENT_ID"), "UTF-8") +
-                "&client_secret=" + URLEncoder.encode(System.getenv("BCUK_BOT_TWITCH_CLIENT_SECRET"), "UTF-8") +
+                "client_id=" + URLEncoder.encode(System.getenv("BCUK_BOT_TWITCH_CLIENT_ID"), StandardCharsets.UTF_8) +
+                "&client_secret=" + URLEncoder.encode(System.getenv("BCUK_BOT_TWITCH_CLIENT_SECRET"), StandardCharsets.UTF_8) +
                 "&grant_type=client_credentials";
         JsonElement json = JsonParser.parseReader(HttpHandler.postRequest(new URL(url)));
         if (json.isJsonObject())
@@ -153,7 +154,7 @@ public class TwitchBot implements BotService
         for (User user : userRepository.findByIsTwitchBotEnabledIsTrue())
         {
             String name = user.getTwitchName();
-            if (name != null && !name.equals(""))
+            if (name != null && !name.isEmpty())
             {
                 twitchClient.getChat().joinChannel(name);
             }
@@ -174,11 +175,11 @@ public class TwitchBot implements BotService
     public String getLastGame(String channel)
     {
         List<com.github.twitch4j.helix.domain.User> uList = twitchClient.getHelix().getUsers(accessToken, null, Collections.singletonList(channel)).execute().getUsers();
-        if (uList.size() == 0)
+        if (uList.isEmpty())
             return null;
         String userID = uList.get(0).getId();
         List<ChannelInformation> ciList = twitchClient.getHelix().getChannelInformation(accessToken, Collections.singletonList(userID)).execute().getChannels();
-        if (ciList.size() == 0)
+        if (ciList.isEmpty())
             return null;
         return ciList.get(0).getGameName();
     }
