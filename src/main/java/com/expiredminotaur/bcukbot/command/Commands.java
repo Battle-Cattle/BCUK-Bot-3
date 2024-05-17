@@ -31,7 +31,7 @@ public abstract class Commands<E extends CommandEvent<?>>
         String[] command = message.split(" ", 2);
 
         List<Alias> alias = aliasRepository.findByTrigger(command[0]);
-        if (alias.size() > 0)
+        if (!alias.isEmpty())
         {
             String newCommand = alias.get(0).getFullCommand();
             command = newCommand.split(" ", 2);
@@ -56,7 +56,7 @@ public abstract class Commands<E extends CommandEvent<?>>
         Set<SFXTrigger> list = (command.length < 2)
                 ? sfxTriggerRepository.getSFXList()
                 : sfxCategoryRepository.getSFXCategoryByNameIgnoreCase(command[1]).getTriggers();
-        if (list != null && list.size() > 0)
+        if (!list.isEmpty())
         {
             StringBuilder s = new StringBuilder();
             Set<String> triggers = new HashSet<>(); //Use a set here to remove duplicates

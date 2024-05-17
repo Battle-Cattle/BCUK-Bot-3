@@ -173,7 +173,7 @@ public class TriviaGame
             StringBuilder s = new StringBuilder();
             s.append(emoji.getRaw()).append(parseText(answer));
             embed = embed.withDescription(s.toString());
-            if (correct.size() > 0)
+            if (!correct.isEmpty())
             {
                 s = new StringBuilder();
                 s.append("Correct: ");
