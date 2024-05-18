@@ -97,4 +97,13 @@ public class MultiTwitchHandler
         }
         return null;
     }
+
+    @Deprecated
+    /*
+    DEBUG CODE TO BE REMOVED LATER
+     */
+    public Map<String, MultiTwitch> debugMultiTwitchs()
+    {
+        return multiTwitchs;
+    }
 }

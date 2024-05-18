@@ -67,4 +67,13 @@ public class MultiTwitch
         for (String channel : users)
             chat.sendMessage(channel, Message);
     }
+
+    @Deprecated
+    /*
+    DEBUG CODE TO BE REMOVED LATER
+     */
+    public Message debugMessage()
+    {
+        return message;
+    }
 }

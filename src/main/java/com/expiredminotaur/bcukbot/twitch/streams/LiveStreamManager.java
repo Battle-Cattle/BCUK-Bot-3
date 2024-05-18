@@ -97,4 +97,22 @@ public class LiveStreamManager
     {
         return twitchBot.getLastGame(channel);
     }
+
+    @Deprecated
+    /*
+    DEBUG CODE TO BE REMOVED LATER
+     */
+    public Map<String, Map<String, StreamData>> debugGetStreams()
+    {
+        return streams;
+    }
+
+    @Deprecated
+    /*
+    DEBUG CODE TO BE REMOVED LATER
+     */
+    public  Map<String, MultiTwitchHandler> debugGetMultiTwitchHandlers()
+    {
+        return multiTwitchHandlers;
+    }
 }
