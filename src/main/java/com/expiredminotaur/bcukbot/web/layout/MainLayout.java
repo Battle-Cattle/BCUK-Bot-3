@@ -7,6 +7,7 @@ import com.expiredminotaur.bcukbot.web.view.MainView;
 import com.expiredminotaur.bcukbot.web.view.MinecraftWhitelistView;
 import com.expiredminotaur.bcukbot.web.view.MusicView;
 import com.expiredminotaur.bcukbot.web.view.admin.DatabaseView;
+import com.expiredminotaur.bcukbot.web.view.admin.LiveDebugView;
 import com.expiredminotaur.bcukbot.web.view.admin.StreamBroadcasterView;
 import com.expiredminotaur.bcukbot.web.view.admin.TaskManagerView;
 import com.expiredminotaur.bcukbot.web.view.admin.UsersView;
@@ -114,6 +115,7 @@ public class MainLayout extends AppLayout
         addMenuItem(subMenu, "Users", UsersView.class);
         addMenuItem(subMenu, "Stream Broadcaster", StreamBroadcasterView.class);
         addMenuItem(subMenu, "Task Manager", TaskManagerView.class);
+        addMenuItem(subMenu, "Live Debug", LiveDebugView.class);
     }
 
     private void addMenuItem(HasMenuItems menu, String name, Class<? extends Component> view)

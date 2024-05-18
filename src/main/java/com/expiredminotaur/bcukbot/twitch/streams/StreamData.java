@@ -83,4 +83,13 @@ public class StreamData
             return "something";
         return stream.getGameName();
     }
+
+    @Deprecated
+    /*
+    DEBUG CODE TO BE REMOVED LATER
+     */
+    public long debugLastUpdated()
+    {
+        return lastUpdated;
+    }
 }
