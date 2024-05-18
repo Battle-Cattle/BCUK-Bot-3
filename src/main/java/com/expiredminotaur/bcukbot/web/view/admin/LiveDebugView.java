@@ -21,10 +21,7 @@ import java.util.Date;
 @AccessLevel(Role.ADMIN)
 public class LiveDebugView extends VerticalLayout
 {
-    @Autowired
-    LiveStreamManager liveStreamManager;
-
-    public LiveDebugView()
+    public LiveDebugView(@Autowired LiveStreamManager liveStreamManager)
     {
         liveStreamManager.debugGetStreams().forEach((groupName, data) ->
         {
@@ -40,7 +37,6 @@ public class LiveDebugView extends VerticalLayout
             });
             add(groupDiv);
         });
-
 
         liveStreamManager.debugGetMultiTwitchHandlers().forEach((name, handler) ->
         {
