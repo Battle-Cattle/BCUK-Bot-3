@@ -7,6 +7,7 @@ import com.expiredminotaur.bcukbot.web.security.AccessLevel;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,8 +32,8 @@ public class LiveDebugView extends VerticalLayout
             {
                 Div streamDiv = new Div();
                 streamDiv.add(new H2(streamName));
-                streamDiv.add(streamData.getGame());
-                streamDiv.add(new Date(streamData.debugLastUpdated()).toString());
+                streamDiv.add(new Paragraph(streamData.getGame()));
+                streamDiv.add(new Paragraph(new Date(streamData.debugLastUpdated()).toString()));
                 groupDiv.add(streamDiv);
             });
             add(groupDiv);
@@ -46,15 +47,16 @@ public class LiveDebugView extends VerticalLayout
             {
                 Div multiDiv = new Div();
                 multiDiv.add(new H2(gameName));
-                multiDiv.add(data.getLink());
+                multiDiv.add(new Paragraph(data.getLink()));
                 if (data.debugMessage() == null)
                 {
                     multiDiv.add("Message Unavailable");
                 }else
                 {
-                    //We may need more info than this in the future but it's a start
-                    multiDiv.add(data.debugMessage().toString());
+                    //We may need more info than this in the future, but it's a start
+                    multiDiv.add(new Paragraph(data.debugMessage().toString()));
                 }
+                groupDiv.add(multiDiv);
             });
             add(groupDiv);
         });
