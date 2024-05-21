@@ -35,6 +35,10 @@ public class MultiTwitchHandler
         {
             currentStreams.computeIfAbsent(user.getValue().getGame(), k -> new HashSet<>()).add(user.getKey());
         }
+        for(String game: multiTwitchs.keySet())
+        {
+            currentStreams.computeIfAbsent(game, k -> new HashSet<>());
+        }
         return currentStreams;
     }
 
