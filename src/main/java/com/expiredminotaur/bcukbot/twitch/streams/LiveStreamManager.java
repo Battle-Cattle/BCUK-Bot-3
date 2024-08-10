@@ -6,7 +6,6 @@ import com.expiredminotaur.bcukbot.sql.twitch.streams.group.GroupRepository;
 import com.expiredminotaur.bcukbot.sql.twitch.streams.streamer.Streamer;
 import com.expiredminotaur.bcukbot.twitch.TwitchBot;
 import com.expiredminotaur.bcukbot.twitch.command.chat.TwitchCommandEvent;
-import com.github.twitch4j.helix.domain.Stream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -17,22 +16,26 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Component
 public class LiveStreamManager
 {
-    @Lazy
-    @Autowired
-    private TwitchBot twitchBot;
-    @Lazy
-    @Autowired
-    private DiscordBot discordBot;
-    @Autowired
-    private GroupRepository groupRepository;
+
+    private final TwitchBot twitchBot;
+
+    private final DiscordBot discordBot;
+
+    private final GroupRepository groupRepository;
 
     private final Map<String, Map<String, StreamData>> streams = new HashMap<>();
     private final Map<String, MultiTwitchHandler> multiTwitchHandlers = new HashMap<>();
+
+    public LiveStreamManager(@Lazy @Autowired TwitchBot twitchBot, @Lazy @Autowired DiscordBot discordBot, @Autowired GroupRepository groupRepository)
+    {
+        this.twitchBot = twitchBot;
+        this.discordBot = discordBot;
+        this.groupRepository = groupRepository;
+    }
 
     @Scheduled(cron = "*/15 * * * * *")//every 15th second
     private void getStreams()
@@ -44,9 +47,8 @@ public class LiveStreamManager
             Set<Streamer> streamers = group.getStreamers();
             if (!streamers.isEmpty())
             {
-                List<String> streamerNames = streamers.stream().map(Streamer::getName).collect(Collectors.toList());
-                List<Stream> streams = twitchBot.getStreams(streamerNames);
-                streams.forEach(s ->
+                List<String> streamerNames = streamers.stream().map(Streamer::getName).toList();
+                twitchBot.getStreams(streamerNames).forEach(s ->
                 {
                     StreamData streamData = groupData.computeIfAbsent(s.getUserName().toLowerCase(), n -> new StreamData(discordBot));
                     streamData.update(group, s);
@@ -96,23 +98,5 @@ public class LiveStreamManager
     public String getLastGame(String channel)
     {
         return twitchBot.getLastGame(channel);
-    }
-
-    @Deprecated
-    /*
-    DEBUG CODE TO BE REMOVED LATER
-     */
-    public Map<String, Map<String, StreamData>> debugGetStreams()
-    {
-        return streams;
-    }
-
-    @Deprecated
-    /*
-    DEBUG CODE TO BE REMOVED LATER
-     */
-    public  Map<String, MultiTwitchHandler> debugGetMultiTwitchHandlers()
-    {
-        return multiTwitchHandlers;
     }
 }

@@ -47,14 +47,14 @@ public class MultiTwitch
 
     private void updateLink()
     {
-        StringBuilder link = new StringBuilder();
-        link.append("http://multitwitch.tv/");
+        StringBuilder newLink = new StringBuilder();
+        newLink.append("http://multitwitch.tv/");
         for (String user : users)
         {
-            link.append(user);
-            link.append("/");
+            newLink.append(user);
+            newLink.append("/");
         }
-        this.link = link.toString();
+        link = newLink.toString();
     }
 
     public void sendLinkToAllUsers(TwitchChat chat)
@@ -62,18 +62,9 @@ public class MultiTwitch
         sendToAllUsers(chat, link);
     }
 
-    public void sendToAllUsers(TwitchChat chat, String Message)
+    public void sendToAllUsers(TwitchChat chat, String message)
     {
         for (String channel : users)
-            chat.sendMessage(channel, Message);
-    }
-
-    @Deprecated
-    /*
-    DEBUG CODE TO BE REMOVED LATER
-     */
-    public Message debugMessage()
-    {
-        return message;
+            chat.sendMessage(channel, message);
     }
 }
